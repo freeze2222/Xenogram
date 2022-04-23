@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.FinalP.finalchat">
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/alien"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/alien"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.FinalChat">
+
+        <activity
+            android:windowSoftInputMode="adjustPan|adjustResize"
+            android:name=".activities.Login_activity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:windowSoftInputMode="adjustPan|adjustResize"
+            android:name=".activities.UserListActivity"
+            android:exported="false" />
+        <activity
+            android:windowSoftInputMode="adjustPan|adjustResize"
+            android:name=".activities.DialogActivity"
+            android:exported="false" />
+        <activity
+            android:windowSoftInputMode="adjustPan|adjustResize"
+            android:name=".activities.ChatActivity"
+            android:exported="false" />
+    </application>
+
+</manifest>

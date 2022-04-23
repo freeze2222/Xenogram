@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/drawable/bg_xml.xml" value="0.1035" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w1240dp/activity_login.xml" value="0.23560910307898258" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w936dp/activity_chat.xml" value="0.1484375" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w936dp/activity_dialog.xml" value="0.1484375" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w936dp/activity_register_with_phone.xml" value="0.2" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w936dp/activity_user_list.xml" value="0.67" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w936dp/item_dialog_row_from.xml" value="0.1484375" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w936dp/item_dialog_row_to.xml" value="0.1484375" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w936dp/item_user_row.xml" value="0.275" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_chat.xml" value="0.25" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_dialog.xml" value="0.33" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_login.xml" value="0.358695652173913" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_register.xml" value="0.33" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_register_with_email.xml" value="0.33" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_register_with_phone.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_register_with_smartphone.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_splash.xml" value="0.33" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_user_list.xml" value="0.1" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/bg_xml.xml" value="0.3532608695652174" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/item_dialog_row_from.xml" value="0.33" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/item_dialog_row_to.xml" value="0.33" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/item_user_row.xml" value="0.33" />
+      </map>
+    </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
