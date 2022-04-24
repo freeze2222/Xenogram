@@ -1,9 +1,9 @@
 package com.FinalP.finalchat.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
-import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,9 +15,9 @@ import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.DatabaseService;
 
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserListActivity extends AppCompatActivity {
 
@@ -26,7 +26,7 @@ public class UserListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // remove title
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_user_list);
 
         ArrayList<User> users = new ArrayList<>();
@@ -49,6 +49,7 @@ public class UserListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         DatabaseService.getUsers(new SimpleListener<List<User>>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onValue(List<User> userList) {
                 users.addAll(userList);

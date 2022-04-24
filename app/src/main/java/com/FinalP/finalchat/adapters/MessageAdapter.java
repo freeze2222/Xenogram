@@ -12,10 +12,8 @@ import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.models.application.Message;
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.models.domain.MessageD;
-import com.firebase.ui.common.ChangeEventType;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DataSnapshot;
 
 
 public abstract class MessageAdapter extends FirebaseRecyclerAdapter<MessageD, MessageAdapter.MessageViewHolder> {
@@ -63,9 +61,6 @@ public abstract class MessageAdapter extends FirebaseRecyclerAdapter<MessageD, M
             nameView.setText(message.from.name);
             textView.setText(message.text);
             timeView.setText(message.creationDate.toLocaleString());
-        }
-        public void scroll(){
-
         }
     }
 }

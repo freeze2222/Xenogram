@@ -2,9 +2,7 @@ package com.FinalP.finalchat.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +15,8 @@ import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.FinalP.finalchat.services.WrapContentLinearLayoutManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Objects;
 
 
 public class ChatActivity extends AppCompatActivity {
@@ -32,7 +32,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // remove title
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_chat);
 
         initViews();
@@ -42,10 +42,10 @@ public class ChatActivity extends AppCompatActivity {
             public void onValue(User user) {
                 if (user != null) {
                     currentUser = user;
-
                     adapter = new LastMessagesAdapter(DatabaseService.getUsersOptions(currentUser), new SimpleListener<String>() {
                         @Override
                         public void onValue(String toId) {
+                            if(id.equals(toId)){
                             DatabaseService.getUser(toId, new SimpleListener<User>() {
                                 @Override
                                 public void onValue(User value) {
@@ -55,6 +55,7 @@ public class ChatActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 }
                             });
+                            }
                         }
                     });
                     adapter.startListening();
@@ -64,13 +65,10 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), UserListActivity.class);
-                intent.putExtra("DIALOG_FROM", currentUser);
-                startActivity(intent);
-            }
+        floatingActionButton.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), UserListActivity.class);
+            intent.putExtra("DIALOG_FROM", currentUser);
+            startActivity(intent);
         });
     }
 

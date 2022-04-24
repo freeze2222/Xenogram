@@ -1,14 +1,13 @@
 package com.FinalP.finalchat.models.domain;
 
+import androidx.annotation.NonNull;
+
 import java.util.Map;
 import java.util.Objects;
 
 public class GroupD {
     public GroupMetadataD metadata;
     public Map<String, MessageD> messages;
-
-    public GroupD() {
-    }
 
     public GroupD(GroupMetadataD metadata, Map<String, MessageD> messages) {
         this.metadata = metadata;
@@ -28,6 +27,7 @@ public class GroupD {
         return Objects.hash(metadata, messages);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "DialogD{" +

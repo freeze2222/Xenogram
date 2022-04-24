@@ -1,6 +1,5 @@
 package com.FinalP.finalchat.adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.listeners.SimpleListener;
-import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
 
 import java.util.concurrent.ExecutionException;
 
@@ -58,20 +55,10 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
         }
 
         public void bind(String key, SimpleListener<String> openChat) throws InterruptedException, ExecutionException {
-            DatabaseService.getNameFromKey(key, new Callback<String>() {
-                @Override
-                public void call(String arg) {
-                    nameView.setText(arg);
-                }
-            });
+            DatabaseService.getNameFromKey(key, arg -> nameView.setText(arg));
             emailView.setText(key);
 
-            rootLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openChat.onValue(key);
-                }
-            });
+            rootLayout.setOnClickListener(v -> openChat.onValue(DatabaseService.reformString(key)));
         }
     }
 }

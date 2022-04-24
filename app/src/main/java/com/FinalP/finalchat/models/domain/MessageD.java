@@ -1,5 +1,7 @@
 package com.FinalP.finalchat.models.domain;
 
+import androidx.annotation.NonNull;
+
 import java.util.Objects;
 
 public class MessageD {
@@ -33,6 +35,7 @@ public class MessageD {
         return Objects.hash(text, isRead, isSent, fromID, createDate);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Message{" +

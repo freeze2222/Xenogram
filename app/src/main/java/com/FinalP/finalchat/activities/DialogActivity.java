@@ -2,22 +2,18 @@
 // а если нет, то не знаю, кто его писал.
 package com.FinalP.finalchat.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
@@ -30,7 +26,8 @@ import com.FinalP.finalchat.adapters.MessageAdapter;
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.ChatService;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.util.Objects;
 
 
 public class DialogActivity extends AppCompatActivity {
@@ -45,70 +42,48 @@ public class DialogActivity extends AppCompatActivity {
     User toUser;
 
     MessageAdapter adapter;
-    OnFailureListener failureListener = new OnFailureListener() {
-        @Override
-        public void onFailure(@NonNull Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "Error happend!", Toast.LENGTH_SHORT).show();
-        }
+    OnFailureListener failureListener = e -> {
+        e.printStackTrace();
+        Toast.makeText(getApplicationContext(), "Error happened!", Toast.LENGTH_SHORT).show();
     };
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // remove title
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_dialog);
 
         initUsers();
 
         initViews();
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        sendView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = editTextView.getText().toString();
-                if (text.isEmpty()) return;
+        backButton.setOnClickListener(view -> finish());
+        sendView.setOnClickListener(v -> {
+            String text = editTextView.getText().toString();
+            if (text.isEmpty()) return;
 
-                if (adapter.getItemCount() == 0) {
-                    ChatService.createDialog(currentUser, toUser)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    ChatService.sendMessage(text, currentUser, toUser)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    editTextView.getText().clear();
-                                                    adapter.notifyDataSetChanged();
-                                                    chatView.smoothScrollToPosition(adapter.getItemCount());
-                                                }
-                                            })
-                                            .addOnFailureListener(failureListener);
-                                }
-                            }).addOnFailureListener(failureListener);
-                } else {
-                    ChatService.sendMessage(text, currentUser, toUser)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
+            if (adapter.getItemCount() == 0) {
+                ChatService.createDialog(currentUser, toUser)
+                        .addOnSuccessListener(unused -> ChatService.sendMessage(text, currentUser, toUser)
+                                .addOnSuccessListener(unused1 -> {
                                     editTextView.getText().clear();
                                     adapter.notifyDataSetChanged();
                                     chatView.smoothScrollToPosition(adapter.getItemCount());
-                                }
-
-                            })
-                            .addOnFailureListener(failureListener);
-
-                }
+                                })
+                                .addOnFailureListener(failureListener)).addOnFailureListener(failureListener);
+            } else {
+                ChatService.sendMessage(text, currentUser, toUser)
+                        .addOnSuccessListener(unused -> {
+                            editTextView.getText().clear();
+                            adapter.notifyDataSetChanged();
+                            chatView.smoothScrollToPosition(adapter.getItemCount());
+                        })
+                        .addOnFailureListener(failureListener);
 
             }
+
         });
     }
 
@@ -144,6 +119,7 @@ public class DialogActivity extends AppCompatActivity {
         chatView.setLayoutManager(manager);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onStart() {
@@ -163,7 +139,7 @@ public class DialogActivity extends AppCompatActivity {
     }
     public void notifySend() {
         Intent pendingTempIntent=new Intent(getApplicationContext(),ChatActivity.class);
-        PendingIntent pendingIntent=PendingIntent.getActivity(this,0,pendingTempIntent,0);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent=PendingIntent.getActivity(this,0,pendingTempIntent,0);
         Notification builder = new NotificationCompat.Builder(this, ChannelID)
                 .setSmallIcon(R.drawable.alien)
                 .setContentTitle("С вами пытается кто-то связаться!")
@@ -171,8 +147,7 @@ public class DialogActivity extends AppCompatActivity {
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setContentIntent(pendingIntent).build();
-        long[] vibrate = new long[] { 1000, 1000, 1000, 1000, 1000 };
-        builder.vibrate = vibrate;
+        builder.vibrate = new long[] { 1000, 1000, 1000, 1000, 1000 };
 
         NotificationManagerCompat.from(this).notify(notificationID, builder);
 

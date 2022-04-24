@@ -1,7 +1,5 @@
 package com.FinalP.finalchat.services;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.FinalP.finalchat.listeners.SimpleListener;
@@ -17,12 +15,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class DatabaseService {
-    public static String reso = "NA";
 
     public static DatabaseReference usersRef(String id) {
         return FirebaseDatabase.getInstance()
@@ -34,19 +29,21 @@ public class DatabaseService {
                 .getReference("users/");
     }
 
-    public static String addUser(UserD user) {
+    public static void addUser(UserD user) {
         DatabaseReference ref = usersRef(user.email);
         ref.setValue(user);
-        return ref.getKey();
+        ref.getKey();
     }
-
+    public static String reformString(String s){
+        return s.replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", "");
+    }
     public static void getUser(String id, SimpleListener<User> listener) {
         usersRef(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 UserD userD = snapshot.getValue(UserD.class);
                 if (userD == null) {
-                    listener.onException(new NullPointerException("null"));
+                    listener.onException();
                     return;
                 }
 
@@ -56,7 +53,7 @@ public class DatabaseService {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                listener.onDatabaseError(error);
+                listener.onDatabaseError();
             }
         });
     }

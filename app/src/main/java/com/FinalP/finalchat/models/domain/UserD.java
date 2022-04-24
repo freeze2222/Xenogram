@@ -1,5 +1,7 @@
 package com.FinalP.finalchat.models.domain;
 
+import androidx.annotation.NonNull;
+
 public class UserD {
     public String name;
     public String email;
@@ -16,6 +18,7 @@ public class UserD {
         this.email=email;
         this.id=email.replaceAll(";","").replaceAll("\\.","").replaceAll("@","");
     }
+    @NonNull
     @Override
     public String toString() {
         return "UserD{" +

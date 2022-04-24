@@ -1,13 +1,11 @@
 package com.FinalP.finalchat.services;
 
-import com.FinalP.finalchat.models.application.Group;
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.models.domain.GroupD;
 import com.FinalP.finalchat.models.domain.GroupMetadataD;
 import com.FinalP.finalchat.models.domain.MessageD;
 import com.firebase.ui.database.ClassSnapshotParser;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -41,15 +39,12 @@ public class ChatService {
     public static Task<Void> createDialog(User currentUser, User toUser) {
         GroupD dialog = new GroupD(
                 new GroupMetadataD(new Date().getTime()),
-                new HashMap<String, MessageD>()
+                new HashMap<>()
         );
         return dialogsRef(currentUser, toUser).setValue(dialog)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        DatabaseService.usersRef(currentUser.id).child("chats").push().setValue(toUser.id);
-                        DatabaseService.usersRef(toUser.id).child("chats").push().setValue(currentUser.id);
-                    }
+                .addOnSuccessListener(unused -> {
+                    DatabaseService.usersRef(currentUser.id).child("chats").push().setValue(toUser.id);
+                    DatabaseService.usersRef(toUser.id).child("chats").push().setValue(currentUser.id);
                 });
 //        ...
     }

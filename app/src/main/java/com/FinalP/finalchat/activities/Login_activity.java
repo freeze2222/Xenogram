@@ -1,13 +1,10 @@
 package com.FinalP.finalchat.activities;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.listeners.SimpleListener;
@@ -15,7 +12,6 @@ import com.FinalP.finalchat.models.domain.UserD;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,11 +23,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Login_activity extends AppCompatActivity {
-    SimpleListener<String> listener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_login);
         if(FirebaseAuth.getInstance().getCurrentUser()==null){
         List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -57,12 +52,7 @@ public class Login_activity extends AppCompatActivity {
 
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
             new FirebaseAuthUIActivityResultContract(),
-            new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
-                @Override
-                public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
-                    onSignInResult(result);
-                }
-            }
+            this::onSignInResult
     );
     private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
         SimpleListener<String> listener=new SimpleListener<String>() {
@@ -72,7 +62,7 @@ public class Login_activity extends AppCompatActivity {
                 DatabaseService.addUser(userD);
             }
         };
-        IdpResponse response = result.getIdpResponse();
+        //IdpResponse response = result.getIdpResponse();
         if (result.getResultCode() == RESULT_OK) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             assert user != null;
@@ -82,11 +72,10 @@ public class Login_activity extends AppCompatActivity {
             signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";","").replaceAll("\\.","").replaceAll("@",""));
             signInLauncher.launch(signInIntent);
 
-        } else {
-            // Sign in failed. If response is null the user canceled the
-            // sign-in flow using the back button. Otherwise check
-            // response.getError().getErrorCode() and handle the error.
-            // ...
-        }
+        }  // Sign in failed. If response is null the user canceled the
+        // sign-in flow using the back button. Otherwise check
+        // response.getError().getErrorCode() and handle the error.
+        // ...
+
     }
 }

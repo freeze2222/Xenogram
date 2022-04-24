@@ -1,12 +1,11 @@
 package com.FinalP.finalchat.models.domain;
 
+import androidx.annotation.NonNull;
+
 import java.util.Objects;
 
 public class GroupMetadataD {
     public long createDate;
-
-    public GroupMetadataD() {
-    }
 
     public GroupMetadataD(long createDate) {
         this.createDate = createDate;
@@ -25,6 +24,7 @@ public class GroupMetadataD {
         return Objects.hash(createDate);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "DialogMetadata{" +

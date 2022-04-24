@@ -42,7 +42,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         return users.size();
     }
 
-    class UserViewHolder extends RecyclerView.ViewHolder {
+    static class UserViewHolder extends RecyclerView.ViewHolder {
         ImageView avatarView;
         TextView nameView;
         TextView emailView;
@@ -60,12 +60,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             nameView.setText(user.name);
             emailView.setText(user.email);
             avatarView.setImageResource(R.drawable.alien);
-            rootLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openChat.onValue(user);
-                }
-            });
+            rootLayout.setOnClickListener(v -> openChat.onValue(user));
         }
     }
 }
