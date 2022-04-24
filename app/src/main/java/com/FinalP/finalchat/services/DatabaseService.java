@@ -22,11 +22,13 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class DatabaseService {
-    public static String reso="NA";
+    public static String reso = "NA";
+
     public static DatabaseReference usersRef(String id) {
         return FirebaseDatabase.getInstance()
-                .getReference("users/"+id.replaceAll(";","").replaceAll("\\.","").replaceAll("@",""));
+                .getReference("users/" + id.replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
     }
+
     public static DatabaseReference cleanUsersRef() {
         return FirebaseDatabase.getInstance()
                 .getReference("users/");
@@ -58,12 +60,11 @@ public class DatabaseService {
             }
         });
     }
-    public synchronized static String getNameFromKey(String key) throws InterruptedException, ExecutionException {
+
+    public static void getNameFromKey(String key, Callback<String> callback) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users/" + key);
         System.out.println(ref);
-        GetNameSupport getNameSupport=new GetNameSupport();
-        getNameSupport.getValue(ref);
-        return getNameSupport.getValue(ref);
+        GetNameSupport.getValue(ref, callback);
     }
 
     public static void getUsers(SimpleListener<List<User>> listener) {
