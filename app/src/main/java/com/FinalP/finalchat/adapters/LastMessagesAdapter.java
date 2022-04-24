@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.listeners.SimpleListener;
+import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -57,9 +58,12 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
         }
 
         public void bind(String key, SimpleListener<String> openChat) throws InterruptedException, ExecutionException {
-            DatabaseService databaseService=new DatabaseService();
-            Log.e("DATACHECK","MSG:"+databaseService.getNameFromKey(key));
-            nameView.setText(databaseService.getNameFromKey(key));
+            DatabaseService.getNameFromKey(key, new Callback<String>() {
+                @Override
+                public void call(String arg) {
+                    nameView.setText(arg);
+                }
+            });
             emailView.setText(key);
 
             rootLayout.setOnClickListener(new View.OnClickListener() {
