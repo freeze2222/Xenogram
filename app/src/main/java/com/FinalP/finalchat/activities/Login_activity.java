@@ -23,42 +23,42 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Login_activity extends AppCompatActivity {
+    private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
+            new FirebaseAuthUIActivityResultContract(),
+            this::onSignInResult
+    );
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_login);
-        if(FirebaseAuth.getInstance().getCurrentUser()==null){
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.PhoneBuilder().build()
-        );
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            List<AuthUI.IdpConfig> providers = Arrays.asList(
+                    new AuthUI.IdpConfig.EmailBuilder().build(),
+                    new AuthUI.IdpConfig.PhoneBuilder().build()
+            );
 
-        Intent signInIntent = AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(providers)
-                .setLogo(R.drawable.alien)
-                .setTosAndPrivacyPolicyUrls("Тут ничего нет","Серьёзно")
-                .build();
-        signInLauncher.launch(signInIntent);
-    }
-        else {
-            Intent signInIntent = new Intent(this,ChatActivity.class);
-            signInIntent.putExtra("id", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()).replaceAll(";","").replaceAll("\\.","").replaceAll("@",""));
-            signInIntent.putExtra("name",FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+            Intent signInIntent = AuthUI.getInstance()
+                    .createSignInIntentBuilder()
+                    .setAvailableProviders(providers)
+                    .setLogo(R.drawable.alien)
+                    .setTosAndPrivacyPolicyUrls("Тут ничего нет", "Серьёзно")
+                    .build();
+            signInLauncher.launch(signInIntent);
+        } else {
+            Intent signInIntent = new Intent(this, ChatActivity.class);
+            signInIntent.putExtra("id", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
+            signInIntent.putExtra("name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
             signInLauncher.launch(signInIntent);
         }
     }
 
-    private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
-            new FirebaseAuthUIActivityResultContract(),
-            this::onSignInResult
-    );
     private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
-        SimpleListener<String> listener=new SimpleListener<String>() {
+        SimpleListener<String> listener = new SimpleListener<String>() {
             @Override
-            public void onValueReg(String val,String val2){
-                UserD userD = new UserD("Guest"+UUID.randomUUID(),new Date().getTime(),val,val2);
+            public void onValueReg(String val, String val2) {
+                UserD userD = new UserD("Guest" + UUID.randomUUID(), new Date().getTime(), val, val2);
                 DatabaseService.addUser(userD);
             }
         };
@@ -66,10 +66,10 @@ public class Login_activity extends AppCompatActivity {
         if (result.getResultCode() == RESULT_OK) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             assert user != null;
-            listener.onValueReg(user.getEmail(),user.getDisplayName());
+            listener.onValueReg(user.getEmail(), user.getDisplayName());
 
-            Intent signInIntent = new Intent(this,ChatActivity.class);
-            signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";","").replaceAll("\\.","").replaceAll("@",""));
+            Intent signInIntent = new Intent(this, ChatActivity.class);
+            signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
             signInLauncher.launch(signInIntent);
 
         }  // Sign in failed. If response is null the user canceled the

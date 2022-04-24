@@ -34,9 +34,11 @@ public class DatabaseService {
         ref.setValue(user);
         ref.getKey();
     }
-    public static String reformString(String s){
+
+    public static String reformString(String s) {
         return s.replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", "");
     }
+
     public static void getUser(String id, SimpleListener<User> listener) {
         usersRef(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

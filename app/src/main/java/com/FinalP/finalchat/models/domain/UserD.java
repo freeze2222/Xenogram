@@ -8,16 +8,18 @@ public class UserD {
     public String username;
     public long createDate;
     public String id;
-    public UserD(){//required
-}
 
-    public UserD(String username,long createDate,String email,String name){
-        this.name=name;
+    public UserD() {//required
+    }
+
+    public UserD(String username, long createDate, String email, String name) {
+        this.name = name;
         this.createDate = createDate;
         this.username = username;
-        this.email=email;
-        this.id=email.replaceAll(";","").replaceAll("\\.","").replaceAll("@","");
+        this.email = email;
+        this.id = email.replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", "");
     }
+
     @NonNull
     @Override
     public String toString() {

@@ -18,6 +18,7 @@ public class GetNameSupport {
                 String res = String.valueOf(dataSnapshot.getValue());
                 callback.call(res);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("ERROR", "Error while reading data");

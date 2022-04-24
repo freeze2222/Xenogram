@@ -45,16 +45,16 @@ public class ChatActivity extends AppCompatActivity {
                     adapter = new LastMessagesAdapter(DatabaseService.getUsersOptions(currentUser), new SimpleListener<String>() {
                         @Override
                         public void onValue(String toId) {
-                            if(id.equals(toId)){
-                            DatabaseService.getUser(toId, new SimpleListener<User>() {
-                                @Override
-                                public void onValue(User value) {
-                                    Intent intent = new Intent(getApplicationContext(), DialogActivity.class);
-                                    intent.putExtra("DIALOG_WITH", user);
-                                    intent.putExtra("DIALOG_FROM", value);
-                                    startActivity(intent);
-                                }
-                            });
+                            if (id.equals(toId)) {
+                                DatabaseService.getUser(toId, new SimpleListener<User>() {
+                                    @Override
+                                    public void onValue(User value) {
+                                        Intent intent = new Intent(getApplicationContext(), DialogActivity.class);
+                                        intent.putExtra("DIALOG_WITH", user);
+                                        intent.putExtra("DIALOG_FROM", value);
+                                        startActivity(intent);
+                                    }
+                                });
                             }
                         }
                     });

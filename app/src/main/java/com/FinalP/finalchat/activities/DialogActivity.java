@@ -31,8 +31,8 @@ import java.util.Objects;
 
 
 public class DialogActivity extends AppCompatActivity {
-    int notificationID=404;
-    String ChannelID="DefaultChannel";
+    int notificationID = 404;
+    String ChannelID = "DefaultChannel";
     RecyclerView chatView;
     Button sendView;
     ImageView backButton;
@@ -93,7 +93,7 @@ public class DialogActivity extends AppCompatActivity {
     }
 
     public void initViews() {
-        backButton=findViewById(R.id.back);
+        backButton = findViewById(R.id.back);
         chatView = findViewById(R.id.dialogChatView);
         sendView = findViewById(R.id.button);
         editTextView = findViewById(R.id.editTextTextPersonName2);
@@ -103,10 +103,9 @@ public class DialogActivity extends AppCompatActivity {
             @Override
             public void onDataChanged() {
                 chatView.smoothScrollToPosition(adapter.getItemCount());
-                if (currentUser.id.equals(adapter.currentUser.id)){
+                if (currentUser.id.equals(adapter.currentUser.id)) {
                     //TODO
-                    }
-                else {
+                } else {
                     notifySend();
                 }
 
@@ -137,9 +136,10 @@ public class DialogActivity extends AppCompatActivity {
         adapter.stopListening();
         super.onStop();
     }
+
     public void notifySend() {
-        Intent pendingTempIntent=new Intent(getApplicationContext(),ChatActivity.class);
-        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent=PendingIntent.getActivity(this,0,pendingTempIntent,0);
+        Intent pendingTempIntent = new Intent(getApplicationContext(), ChatActivity.class);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, pendingTempIntent, 0);
         Notification builder = new NotificationCompat.Builder(this, ChannelID)
                 .setSmallIcon(R.drawable.alien)
                 .setContentTitle("С вами пытается кто-то связаться!")
@@ -147,10 +147,9 @@ public class DialogActivity extends AppCompatActivity {
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setContentIntent(pendingIntent).build();
-        builder.vibrate = new long[] { 1000, 1000, 1000, 1000, 1000 };
+        builder.vibrate = new long[]{1000, 1000, 1000, 1000, 1000};
 
         NotificationManagerCompat.from(this).notify(notificationID, builder);
-
 
 
     }

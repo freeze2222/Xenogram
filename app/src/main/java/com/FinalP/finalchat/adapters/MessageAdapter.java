@@ -17,14 +17,15 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 
 public abstract class MessageAdapter extends FirebaseRecyclerAdapter<MessageD, MessageAdapter.MessageViewHolder> {
-   public User currentUser;
-   public User toUser;
+    public User currentUser;
+    public User toUser;
 
     public MessageAdapter(@NonNull FirebaseRecyclerOptions<MessageD> options, User currentUser, User toUser) {
         super(options);
         this.currentUser = currentUser;
         this.toUser = toUser;
     }
+
     @Override
     public abstract void onDataChanged();
 
