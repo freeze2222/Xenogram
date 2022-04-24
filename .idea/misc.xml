@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/drawable/bg_xml.xml" value="0.1035" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.1035" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.1035" />
         <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w1240dp/activity_login.xml" value="0.23560910307898258" />
         <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w936dp/activity_chat.xml" value="0.1484375" />
         <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w936dp/activity_dialog.xml" value="0.1484375" />
@@ -12,7 +14,7 @@
         <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w936dp/item_dialog_row_from.xml" value="0.1484375" />
         <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w936dp/item_dialog_row_to.xml" value="0.1484375" />
         <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout-w936dp/item_user_row.xml" value="0.275" />
-        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_chat.xml" value="0.25" />
+        <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_chat.xml" value="0.33" />
         <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_dialog.xml" value="0.33" />
         <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_login.xml" value="0.358695652173913" />
         <entry key="..\:/AndroidFolder/FinalChat/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
