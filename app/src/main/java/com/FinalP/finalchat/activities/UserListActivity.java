@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.FinalP.finalchat.R;
+import com.FinalP.finalchat.activities.DialogActivity;
 import com.FinalP.finalchat.adapters.UsersAdapter;
 import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
