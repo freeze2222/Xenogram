@@ -44,7 +44,7 @@ public class DatabaseService {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 UserD userD = snapshot.getValue(UserD.class);
                 if (userD == null) {
-                    listener.onException(new NullPointerException("Snapshot is null"));
+                    listener.onException(new NullPointerException("null"));
                     return;
                 }
 
@@ -62,7 +62,7 @@ public class DatabaseService {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users/" + key);
         System.out.println(ref);
         GetNameSupport getNameSupport=new GetNameSupport();
-        getNameSupport.getValue(ref); //костыль
+        getNameSupport.getValue(ref);
         return getNameSupport.getValue(ref);
     }
 
