@@ -18,16 +18,21 @@
             android:layout_marginBottom="16dp"
             android:text="Сохранить"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout_editor_absoluteX="146dp" />
+            app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName4"
+            app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName4"
+            app:layout_constraintTop_toBottomOf="@+id/avatar"
+            app:layout_constraintVertical_bias="0.86" />
 
         <ImageView
             android:id="@+id/avatar"
             android:layout_width="150dp"
             android:layout_height="139dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="128dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Welcome"
-            tools:layout_editor_absoluteX="130dp"
-            tools:src="@tools:sample/avatars" />
+            tools:ignore="ImageContrastCheck"
+            tools:src="@drawable/alien_without_text" />
 
         <TextView
             android:id="@+id/Welcome"
@@ -42,34 +47,51 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/editTextTextPersonName"
+            android:id="@+id/newName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:hint="Имя"
             android:inputType="textPersonName"
-            android:text="Name"
-            tools:layout_editor_absoluteX="95dp"
-            tools:layout_editor_absoluteY="248dp" />
+            android:minHeight="48dp"
+            app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName3"
+            app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName3"
+            app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName3"
+            app:layout_constraintTop_toBottomOf="@+id/avatar"
+            app:layout_constraintVertical_bias="0.707"
+            tools:ignore="DuplicateSpeakableTextCheck" />
 
         <EditText
             android:id="@+id/editTextTextPersonName3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:autofillHints=""
             android:ems="10"
+            android:hint="Фамилия"
             android:inputType="textPersonName"
-            android:text="Name"
-            tools:layout_editor_absoluteX="95dp"
-            tools:layout_editor_absoluteY="313dp" />
+            android:minHeight="48dp"
+            android:textColor="#757575"
+            app:layout_constraintBottom_toTopOf="@+id/button2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.472"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/avatar"
+            app:layout_constraintVertical_bias="0.535" />
 
         <EditText
             android:id="@+id/editTextTextPersonName4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:hint="Bio"
             android:inputType="textPersonName"
-            android:text="Name"
-            tools:layout_editor_absoluteX="96dp"
-            tools:layout_editor_absoluteY="382dp" />
+            android:minHeight="48dp"
+            android:textColor="#757575"
+            app:layout_constraintBottom_toTopOf="@+id/button2"
+            app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName3"
+            app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName3"
+            app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName3"
+            app:layout_constraintVertical_bias="0.343" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

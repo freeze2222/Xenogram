@@ -67,6 +67,12 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
 
                 rootLayout.setOnClickListener(v -> openChat.onValue(DatabaseService.reformString(key)));
             }
+            else {
+                emailView.setText("");
+                emailView.setHeight(0);
+                nameView.setText("Избранное");
+                nameView.setHeight(80);
+            }
         }
     }
 }

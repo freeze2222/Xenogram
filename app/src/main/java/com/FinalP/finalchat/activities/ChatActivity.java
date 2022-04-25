@@ -11,20 +11,12 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.FinalP.finalchat.R;
-import com.FinalP.finalchat.adapters.LastMessagesAdapter;
 import com.FinalP.finalchat.fragments.ChatFragment;
 import com.FinalP.finalchat.fragments.ProfileFragment;
 import com.FinalP.finalchat.fragments.UserListFragment;
-import com.FinalP.finalchat.listeners.SimpleListener;
-import com.FinalP.finalchat.models.application.User;
-import com.FinalP.finalchat.services.DatabaseService;
-import com.FinalP.finalchat.services.WrapContentLinearLayoutManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
@@ -50,14 +42,16 @@ public class ChatActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.frame_content, chatFragment, "home")
-                .add(R.id.frame_content, profileFragment, "profile")
-                .add(R.id.frame_content, addFragment,"add")
+                .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                .add(R.id.frame_content, chatFragment, "homeFragment")
+                .add(R.id.frame_content, profileFragment, "profileFragment")
+                .add(R.id.frame_content, addFragment,"addFragment")
                 .hide(addFragment)
                 .hide(profileFragment)
                 .commit();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setItemIconTintList(null);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
@@ -91,6 +85,7 @@ public class ChatActivity extends AppCompatActivity {
     private void changeFragment(Fragment newFragment) {
         getSupportFragmentManager()
                 .beginTransaction()
+                .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                 .hide(current)
                 .show(newFragment)
                 .commit();
