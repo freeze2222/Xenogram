@@ -3,10 +3,12 @@ package com.FinalP.finalchat.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.Menu;
 import android.view.Window;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,14 +30,6 @@ import java.util.Objects;
 
 
 public class ChatActivity extends AppCompatActivity {
-    User currentUser;
-
-    FloatingActionButton floatingActionButton;
-    RecyclerView userRecyclerView;
-
-    LastMessagesAdapter adapter;
-
-    BottomNavigationView bottomNavigationView;
 
     Fragment chatFragment = new ChatFragment();
     Fragment profileFragment=new ProfileFragment();
@@ -43,6 +37,7 @@ public class ChatActivity extends AppCompatActivity {
 
     Fragment current = chatFragment;
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,94 +45,49 @@ public class ChatActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_chat);
+        initViews();
+
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.frame_content, chatFragment, "chats")
+                .add(R.id.frame_content, chatFragment, "home")
                 .add(R.id.frame_content, profileFragment, "profile")
                 .add(R.id.frame_content, addFragment,"add")
-                .hide(profileFragment)
                 .hide(addFragment)
+                .hide(profileFragment)
                 .commit();
 
-        initViews();
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @SuppressLint("NonConstantResourceId")
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.navigation_home:
-                        changeFragment(chatFragment);
-                        return true;
-                    case R.id.navigation_profile:
-                        changeFragment(profileFragment);
-                        return true;
-                    case R.id.navigation_addUser:
-                        changeFragment(addFragment);
-                }
-                return false;
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    Log.e("DEB","HOME");
+                    changeFragment(chatFragment);
+                    return true;
+                case R.id.navigation_profile:
+                    Log.e("DEB","Profile");
+                    changeFragment(profileFragment);
+                    return true;
+                case R.id.navigation_addUser:
+                    Log.e("DEB","ClickADD");
+                    changeFragment(addFragment);
             }
+            return false;
         });
 
 
-        String id = getIntent().getStringExtra("id");
-        DatabaseService.getUser(id, new SimpleListener<User>() {
-            @Override
-            public void onValue(User user) {
-                if (user != null) {
-                    currentUser = user;
-                    adapter = new LastMessagesAdapter(DatabaseService.getUsersOptions(currentUser), new SimpleListener<String>() {
-                        @Override
-                        public void onValue(String toId) {
-                            if (id.equals(toId)) {
-                                DatabaseService.getUser(toId, new SimpleListener<User>() {
-                                    @Override
-                                    public void onValue(User value) {
-                                        Intent intent = new Intent(getApplicationContext(), DialogActivity.class);
-                                        intent.putExtra("DIALOG_WITH", user);
-                                        intent.putExtra("DIALOG_FROM", value);
-                                        startActivity(intent);
-                                    }
-                                });
-                            }
-                        }
-                    });
-                    adapter.startListening();
 
-                    userRecyclerView.setAdapter(adapter);
-                }
-            }
-        });
-
-        floatingActionButton.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), UserListActivity.class);
-            intent.putExtra("DIALOG_FROM", currentUser);
-            startActivity(intent);
-        });
+        //floatingActionButton.setOnClickListener(v -> {
+        //  Intent intent = new Intent(v.getContext(), UserListActivity.class);
+        //  intent.putExtra("DIALOG_FROM", currentUser);
+        //  startActivity(intent);
+        //});
     }
 
     void initViews() {
-        floatingActionButton = findViewById(R.id.floatingActionButton);
-        userRecyclerView = findViewById(R.id.userRecyclerView);
-
-        userRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        //floatingActionButton = findViewById(R.id.floatingActionButton);
     }
 
-    @Override
-    protected void onStart() {
-        if (adapter != null) {
-            adapter.startListening();
-        }
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        adapter.stopListening();
-        super.onStop();
-    }
     private void changeFragment(Fragment newFragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -145,5 +95,22 @@ public class ChatActivity extends AppCompatActivity {
                 .show(newFragment)
                 .commit();
         current = newFragment;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Toast.makeText(
+                this,
+                "requestCode:"+requestCode+"|resultCode:"+resultCode,
+                Toast.LENGTH_LONG
+        ).show();
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -1,5 +1,6 @@
 package com.FinalP.finalchat.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.listeners.SimpleListener;
+import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -20,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 
 public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMessagesAdapter.UserViewHolder> {
     SimpleListener<String> openChat;
-
+    static String currentEmail;
     public LastMessagesAdapter(@NonNull FirebaseRecyclerOptions<String> options, SimpleListener<String> openChat) {
         super(options);
         this.openChat = openChat;
@@ -29,6 +31,10 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
     @Override
     protected void onBindViewHolder(@NonNull UserViewHolder holder, int position, @NonNull String model) {
         try {
+            Log.e("MODEL!",model);
+            Log.e("VIEW!",holder.emailView.getText().toString());
+            currentEmail=model;
+            if (model==holder.emailView.getText().toString()){}
             holder.bind(model, openChat);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -46,7 +52,6 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
         TextView nameView;
         TextView emailView;
         ConstraintLayout rootLayout;
-
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             nameView = itemView.findViewById(R.id.textViewName);
@@ -55,10 +60,13 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
         }
 
         public void bind(String key, SimpleListener<String> openChat) throws InterruptedException, ExecutionException {
-            DatabaseService.getNameFromKey(key, arg -> nameView.setText(arg));
-            emailView.setText(key);
+            if (!key.equals(currentEmail)){
+                //WORK!
+                DatabaseService.getNameFromKey(key, arg -> nameView.setText(arg));
+                emailView.setText(key);
 
-            rootLayout.setOnClickListener(v -> openChat.onValue(DatabaseService.reformString(key)));
+                rootLayout.setOnClickListener(v -> openChat.onValue(DatabaseService.reformString(key)));
+            }
         }
     }
 }
