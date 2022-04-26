@@ -88,8 +88,8 @@ public class DialogActivity extends AppCompatActivity {
     }
 
     void initUsers() {
-        toUser = (User) getIntent().getSerializableExtra("DIALOG_WITH");
-        currentUser = (User) getIntent().getSerializableExtra("DIALOG_FROM");
+       toUser = (User) getIntent().getSerializableExtra("DIALOG_WITH");
+       currentUser = (User) getIntent().getSerializableExtra("DIALOG_FROM");
     }
 
     public void initViews() {

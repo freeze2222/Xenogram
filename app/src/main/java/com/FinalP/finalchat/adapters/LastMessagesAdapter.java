@@ -16,13 +16,16 @@ import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
 public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMessagesAdapter.UserViewHolder> {
     SimpleListener<String> openChat;
     static String currentEmail;
+    static String currentUserEmail;
     public LastMessagesAdapter(@NonNull FirebaseRecyclerOptions<String> options, SimpleListener<String> openChat) {
         super(options);
         this.openChat = openChat;
@@ -39,6 +42,7 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+
     }
 
     @NonNull
@@ -57,22 +61,30 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
             nameView = itemView.findViewById(R.id.textViewName);
             emailView = itemView.findViewById(R.id.textViewEmail);
             rootLayout = itemView.findViewById(R.id.userLayoutId);
+            currentUserEmail=DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
         }
 
         public void bind(String key, SimpleListener<String> openChat) throws InterruptedException, ExecutionException {
-            if (!key.equals(currentEmail)){
-                //WORK!
-                DatabaseService.getNameFromKey(key, arg -> nameView.setText(arg));
-                emailView.setText(key);
-
-                rootLayout.setOnClickListener(v -> openChat.onValue(DatabaseService.reformString(key)));
-            }
-            else {
+            if (key.equals(currentUserEmail)){
                 emailView.setText("");
                 emailView.setHeight(0);
                 nameView.setText("Избранное");
                 nameView.setHeight(80);
+                Log.e("DATAACCESS","DENIED!");
             }
+            else {
+                //WORK!
+                DatabaseService.getNameFromKey(key, arg -> nameView.setText(arg));
+                emailView.setText(key);
+                Log.e("DATAACCESS","GRANTED!");
+            }
+            Log.e("DATAACCESS",key);
+            Log.e("DATAACCESS",currentUserEmail);
+            Log.e("DATAACCESS", String.valueOf(key.equals(currentUserEmail)));
+            rootLayout.setOnClickListener(v -> {
+                openChat.onValue(DatabaseService.reformString(key));
+            });
         }
     }
 }

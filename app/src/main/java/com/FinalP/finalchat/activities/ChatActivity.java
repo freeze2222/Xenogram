@@ -13,10 +13,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.FinalP.finalchat.R;
+import com.FinalP.finalchat.adapters.LastMessagesAdapter;
 import com.FinalP.finalchat.fragments.ChatFragment;
 import com.FinalP.finalchat.fragments.ProfileFragment;
 import com.FinalP.finalchat.fragments.UserListFragment;
+import com.FinalP.finalchat.listeners.SimpleListener;
+import com.FinalP.finalchat.models.application.User;
+import com.FinalP.finalchat.services.DatabaseService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
@@ -26,8 +31,11 @@ public class ChatActivity extends AppCompatActivity {
     Fragment chatFragment = new ChatFragment();
     Fragment profileFragment=new ProfileFragment();
     Fragment addFragment = new UserListFragment();
-
     Fragment current = chatFragment;
+
+    FloatingActionButton floatingActionButton;
+
+    User currentUser;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -68,18 +76,27 @@ public class ChatActivity extends AppCompatActivity {
             }
             return false;
         });
+        String id = getIntent().getStringExtra("id");
+        DatabaseService.getUser(id, new SimpleListener<User>() {
+            @Override
+            public void onValue(User user) {
+                if (user != null) {
+                    currentUser = user;
+                }
+            }
+        });
 
 
 
-        //floatingActionButton.setOnClickListener(v -> {
-        //  Intent intent = new Intent(v.getContext(), UserListActivity.class);
-        //  intent.putExtra("DIALOG_FROM", currentUser);
-        //  startActivity(intent);
-        //});
+          floatingActionButton.setOnClickListener(v -> {
+          Intent intent = new Intent(v.getContext(), UserListActivity.class);
+          intent.putExtra("DIALOG_FROM", currentUser);
+          startActivity(intent);
+        });
     }
 
     void initViews() {
-        //floatingActionButton = findViewById(R.id.floatingActionButton);
+        floatingActionButton = findViewById(R.id.floatingActionButton);
     }
 
     private void changeFragment(Fragment newFragment) {

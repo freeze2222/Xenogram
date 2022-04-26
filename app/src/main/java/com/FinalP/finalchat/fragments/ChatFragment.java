@@ -46,7 +46,7 @@ public class ChatFragment extends Fragment {
                     adapter = new LastMessagesAdapter(DatabaseService.getUsersOptions(currentUser), new SimpleListener<String>() {
                         @Override
                         public void onValue(String toId) {
-                            if (id.equals(toId)) {
+                            //if (id.equals(toId)) {
                                 DatabaseService.getUser(toId, new SimpleListener<User>() {
                                     @Override
                                     public void onValue(User value) {
@@ -56,7 +56,7 @@ public class ChatFragment extends Fragment {
                                         startActivity(intent);
                                     }
                                 });
-                            }
+                            //}
                         }
                     });
                     adapter.startListening();
