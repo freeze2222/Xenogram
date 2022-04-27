@@ -74,7 +74,6 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
                 Log.e("DATAACCESS","DENIED!");
             }
             else {
-                //WORK!
                 DatabaseService.getNameFromKey(key, arg -> nameView.setText(arg));
                 emailView.setText(key);
                 Log.e("DATAACCESS","GRANTED!");
