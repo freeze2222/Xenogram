@@ -1,5 +1,6 @@
 package com.FinalP.finalchat.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
+import com.FinalP.finalchat.services.DatabaseService;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder> {
     ArrayList<User> users;
     SimpleListener<User> openChat;
+    static String currentEmail= DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+    static String currentEmailRaw=FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
     public UsersAdapter(ArrayList<User> users, SimpleListener<User> openChat) {
         this.users = users;
@@ -57,6 +62,11 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         }
 
         public void bind(User user, SimpleListener<User> openChat) {
+            Log.e("!!!III!!!",currentEmail+" : "+user.email);
+            if (user.email.equals(currentEmailRaw)||user.email.equals("TechnicAccount")){
+                itemView.setVisibility(View.GONE);
+                itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+            }
             nameView.setText(user.name);
             emailView.setText(user.email);
             avatarView.setImageResource(R.drawable.alien);

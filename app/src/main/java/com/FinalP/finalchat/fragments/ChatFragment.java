@@ -2,6 +2,7 @@ package com.FinalP.finalchat.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.FinalP.finalchat.activities.DialogActivity;
 import com.FinalP.finalchat.adapters.LastMessagesAdapter;
 import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
+import com.FinalP.finalchat.models.domain.UserD;
+import com.FinalP.finalchat.services.ChatService;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.FinalP.finalchat.services.WrapContentLinearLayoutManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -58,13 +61,18 @@ public class ChatFragment extends Fragment {
                                 });
                             //}
                         }
-                    });
+                    }
+                    );
                     adapter.startListening();
-
                     userRecyclerView.setAdapter(adapter);
+                    //if (adapter.getItemCount()==0){
+                       // Log.e("WORK!!","WORK!!!");
+                        //ChatService.createDialog(currentUser, new User(new UserD(true)));
+                    //}
                 }
             }
         });
+
         return view;
     }
 

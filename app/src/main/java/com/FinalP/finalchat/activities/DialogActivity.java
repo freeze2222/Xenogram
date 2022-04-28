@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -60,6 +61,7 @@ public class DialogActivity extends AppCompatActivity {
 
         initViews();
         backButton.setOnClickListener(view -> finish());
+
         sendView.setOnClickListener(v -> {
             String text = editTextView.getText().toString();
             if (text.isEmpty()) return;
@@ -104,7 +106,7 @@ public class DialogActivity extends AppCompatActivity {
             public void onDataChanged() {
                 chatView.smoothScrollToPosition(adapter.getItemCount());
                 if (currentUser.id.equals(adapter.currentUser.id)) {
-                    //TODO
+                    Log.e("TODO","TODO");
                 } else {
                     notifySend();
                 }

@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,22 +56,26 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
     static class UserViewHolder extends RecyclerView.ViewHolder {
         TextView nameView;
         TextView emailView;
+        ImageView avatar;
         ConstraintLayout rootLayout;
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             nameView = itemView.findViewById(R.id.textViewName);
             emailView = itemView.findViewById(R.id.textViewEmail);
+            avatar=itemView.findViewById(R.id.imageViewAvatar);
             rootLayout = itemView.findViewById(R.id.userLayoutId);
             currentUserEmail=DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         }
 
         public void bind(String key, SimpleListener<String> openChat) throws InterruptedException, ExecutionException {
-            if (key.equals(currentUserEmail)){
+            if (key.equals("TechnicAccount")){
                 emailView.setText("");
                 emailView.setHeight(0);
                 nameView.setText("Избранное");
+                avatar.setImageResource(R.drawable.fav);
                 nameView.setHeight(80);
+
                 Log.e("DATAACCESS","DENIED!");
             }
             else {
