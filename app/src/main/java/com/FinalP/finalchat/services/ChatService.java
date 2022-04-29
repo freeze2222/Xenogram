@@ -43,8 +43,8 @@ public class ChatService {
         );
         return dialogsRef(currentUser, toUser).setValue(dialog)
                 .addOnSuccessListener(unused -> {
-                    DatabaseService.usersRef(currentUser.id).child("chats").push().setValue(toUser.id);
-                    DatabaseService.usersRef(toUser.id).child("chats").push().setValue(currentUser.id);
+                    DatabaseService.usersRef(currentUser.id).child("chats/"+toUser.id).setValue(toUser.id);
+                    DatabaseService.usersRef(toUser.id).child("chats/"+currentUser.id).push().setValue(currentUser.id);
                 });
 //        ...
     }
