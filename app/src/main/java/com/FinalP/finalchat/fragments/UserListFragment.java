@@ -63,7 +63,9 @@ public class UserListFragment extends Fragment {
                         User[] list= (User[]) arg;
                         User currentUser=list[0];
                         User toUser=list[1];
-                        if (currentUser!=null&&toUser!=null) {
+                        if (currentUser!=null&&toUser!=null&& !toUser.id.equals(currentUser.id) && !toUser.id.equals("TechnicAccount")) {
+                            Log.e("DEB!",currentUser.id);
+                            Log.e("DEB!",toUser.id);
                             ChatService.createDialog(currentUser, toUser);
                             Intent intent = new Intent(getContext(), DialogActivity.class);
                             intent.putExtra("DIALOG_WITH", toUser);

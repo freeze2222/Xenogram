@@ -77,6 +77,10 @@ public class DatabaseService {
                 .setQuery(query, parser)
                 .build();
     }
+    public static void updateUserName(String id,String newName){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users/" + id);
+        ref.child("/name").setValue(newName);
+    }
     public static String BitMapToString(Bitmap bitmap){
         ByteArrayOutputStream baos=new  ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);

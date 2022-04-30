@@ -3,6 +3,7 @@ package com.FinalP.finalchat.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,10 +49,12 @@ public class ChatActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_chat);
+        if (!checkReadExternalPermission()){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    1);
+        }
 
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.MANAGE_EXTERNAL_STORAGE},
-                1);
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -119,5 +122,11 @@ public class ChatActivity extends AppCompatActivity {
         ).show();
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+    private boolean checkReadExternalPermission()
+    {
+        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+        int res = getBaseContext().checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
     }
 }

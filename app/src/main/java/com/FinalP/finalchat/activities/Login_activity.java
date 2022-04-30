@@ -66,6 +66,7 @@ public class Login_activity extends AppCompatActivity {
             @Override
             public void onValueReg(String val, String val2) {
                 UserD userD = new UserD(new Date().getTime(), val, val2,"Default");
+                ChatService.createDialog(new User(userD),new User(new UserD(Long.parseLong("1651337216311"),"TechnicAccount","Избранное","Default")));
                 DatabaseService.addUser(userD);
             }
         };

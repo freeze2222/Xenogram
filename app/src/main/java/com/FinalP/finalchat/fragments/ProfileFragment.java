@@ -3,6 +3,7 @@ package com.FinalP.finalchat.fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.listeners.SimpleListener;
@@ -32,6 +34,7 @@ import com.FinalP.finalchat.services.DatabaseService;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Array;
 
 public class ProfileFragment extends Fragment {
     EditText name;
@@ -41,6 +44,7 @@ public class ProfileFragment extends Fragment {
     Bitmap bitmap;
     String currentUserEmail=DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail());
     String bitmapAvatarDB;
+    Button confirmChanges;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +58,9 @@ public class ProfileFragment extends Fragment {
         surname=rootView.findViewById(R.id.newSurName);
         avatar=rootView.findViewById(R.id.avatar);
         galleryButton=rootView.findViewById(R.id.galleryButton);
+        confirmChanges=rootView.findViewById(R.id.confirmChanges);
+        final String[] userName = new String[1];
+        final String[] userSurname = new String[1];
         DatabaseService.getUser(currentUserEmail, new SimpleListener<User>() {
             @Override
             public void onValue(User value) {
@@ -66,8 +73,25 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
-
-
+        DatabaseService.getUser(currentUserEmail, new SimpleListener<User>() {
+            @Override
+            public void onValue(User value) {
+                String[] array=value.name.split(" ");
+                name.setText(array[0]);
+                surname.setText(array[1]);
+            }
+        });
+        confirmChanges.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String nameUser=name.getText().toString();
+                String surnameUser=surname.getText().toString();
+                if (!nameUser.equals("")&&!surnameUser.equals("")){
+                    DatabaseService.updateUserName(currentUserEmail,nameUser+" "+surnameUser);
+                    Toast.makeText(getContext(),"Успешно!",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +107,7 @@ public class ProfileFragment extends Fragment {
 
         if (requestCode == 2) {
             if (resultCode == Activity.RESULT_OK) {
+
                 //pick image from gallery
                 Uri selectedImage = data.getData();
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
@@ -96,20 +121,13 @@ public class ProfileFragment extends Fragment {
                 String imgDecodableString = cursor.getString(columnIndex);
                 cursor.close();
                 bitmap = BitmapFactory.decodeFile(imgDecodableString);
+                if (bitmap != null) {
+                    DatabaseService.addAvatar(currentUserEmail, DatabaseService.BitMapToString(bitmap));
+                    avatar.setImageBitmap(bitmap);
+                }
 
 
             }
-            /*
-            getCUser(currentUserEmail, new Callback() {
-                @Override
-                public void call(Object arg) {
-                    User currentUser=(User) arg;
-                }
-            });
-             */
-            DatabaseService.addAvatar(currentUserEmail,DatabaseService.BitMapToString(bitmap));
-            avatar.setImageBitmap(bitmap);
-
         }
     }
 

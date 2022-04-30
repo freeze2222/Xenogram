@@ -13,17 +13,15 @@
         android:background="@drawable/frame_fragment_template">
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/confirmChanges"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="36dp"
             android:text="Сохранить"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName4"
-            app:layout_constraintHorizontal_bias="0.373"
+            app:layout_constraintHorizontal_bias="0.516"
             app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName4"
-            app:layout_constraintTop_toBottomOf="@+id/avatar"
-            app:layout_constraintVertical_bias="0.874" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName4" />
 
         <ImageView
             android:id="@+id/avatar"
@@ -52,23 +50,22 @@
             android:id="@+id/newName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:ems="10"
             android:hint="Имя"
             android:inputType="textPersonName"
             android:minHeight="48dp"
-            app:layout_constraintBottom_toTopOf="@+id/newSurName"
             app:layout_constraintEnd_toEndOf="@+id/galleryButton"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/galleryButton"
-            app:layout_constraintTop_toBottomOf="@+id/avatar"
-            app:layout_constraintVertical_bias="0.857"
+            app:layout_constraintTop_toBottomOf="@+id/galleryButton"
             tools:ignore="DuplicateSpeakableTextCheck" />
 
         <EditText
             android:id="@+id/newSurName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="188dp"
+            android:layout_marginTop="16dp"
             android:autofillHints=""
             android:ems="10"
             android:hint="Фамилия"
@@ -76,36 +73,35 @@
             android:minHeight="48dp"
             android:textColor="#757575"
             app:layout_constraintEnd_toEndOf="@+id/newName"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/newName"
-            app:layout_constraintTop_toBottomOf="@+id/avatar" />
+            app:layout_constraintTop_toBottomOf="@+id/newName" />
 
         <EditText
             android:id="@+id/editTextTextPersonName4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:ems="10"
             android:hint="//unused"
             android:inputType="textPersonName"
             android:minHeight="48dp"
             android:textColor="#757575"
-            app:layout_constraintBottom_toTopOf="@+id/button2"
             app:layout_constraintEnd_toEndOf="@+id/newSurName"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/newSurName"
-            app:layout_constraintTop_toBottomOf="@+id/newSurName"
-            app:layout_constraintVertical_bias="0.26" />
+            app:layout_constraintTop_toBottomOf="@+id/newSurName" />
 
         <Button
             android:id="@+id/galleryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:text="Загрузить изображение"
-            app:layout_constraintBottom_toTopOf="@+id/newName"
             app:layout_constraintEnd_toEndOf="@+id/avatar"
+            app:layout_constraintHorizontal_bias="0.45"
             app:layout_constraintStart_toStartOf="@+id/avatar"
-            app:layout_constraintTop_toBottomOf="@+id/avatar"
-            app:layout_constraintVertical_bias="0.577" />
+            app:layout_constraintTop_toBottomOf="@+id/avatar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
