@@ -14,12 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
+import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
@@ -75,12 +75,26 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
                 nameView.setText("Избранное");
                 avatar.setImageResource(R.drawable.fav);
                 nameView.setHeight(80);
-
                 Log.e("DATAACCESS","DENIED!");
             }
             else {
-                DatabaseService.getNameFromKey(key, arg -> nameView.setText(arg));
+                DatabaseService.getNameFromKey(key, new Callback<User>() {
+                    @Override
+                    public void call(User arg) {
+                        nameView.setText(arg.name);
+                        Log.e("DEBUG",arg.avatar);
+                        if (!arg.avatar.equals("Default")) {
+                            avatar.setImageBitmap(DatabaseService.StringToBitMap(arg.avatar));
+                            Log.e("DEBUG",arg.avatar);
+                            Log.e("DEBUG","SETTINGFROMDB");
+                        } else {
+                            avatar.setImageResource(R.drawable.alien_without_text);
+                            Log.e("DEBUG","SETTINGDEFAULT");
+                        }
+                    }
+                });
                 emailView.setText(key);
+
                 Log.e("DATAACCESS","GRANTED!");
             }
             Log.e("DATAACCESS",key);

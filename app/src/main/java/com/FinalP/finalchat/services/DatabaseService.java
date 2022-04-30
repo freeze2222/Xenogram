@@ -1,5 +1,9 @@
 package com.FinalP.finalchat.services;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 import androidx.annotation.NonNull;
 
 import com.FinalP.finalchat.listeners.SimpleListener;
@@ -14,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +29,9 @@ public class DatabaseService {
                 .getReference("users/" + id.replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
     }
 
-    public static DatabaseReference cleanUsersRef() {
-        return FirebaseDatabase.getInstance()
-                .getReference("users/");
+    public static void addAvatar(String userId,String bitmapPicBase64){
+        usersRef(userId+"/avatar").setValue(bitmapPicBase64);
     }
-
     public static void addUser(UserD user) {
         DatabaseReference ref = usersRef(user.email);
         ref.setValue(user);
@@ -60,31 +63,12 @@ public class DatabaseService {
         });
     }
 
-    public static void getNameFromKey(String key, Callback<String> callback) {
+    public static void getNameFromKey(String key, Callback<User> callback) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users/" + key);
         System.out.println(ref);
-        GetNameSupport.getValue(ref, callback);
+        GetUserSupport.getValue(ref, callback);
     }
 
-    public static void getUsers(SimpleListener<List<User>> listener) {
-        cleanUsersRef().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<User> users = new ArrayList<>();
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    UserD userD = child.getValue(UserD.class);
-                    assert userD != null;
-                    users.add(new User(userD));
-                }
-
-                listener.onValue(users);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-    }
 
     public static FirebaseRecyclerOptions<String> getUsersOptions(User user) {
         Query query = usersRef(user.id).child("chats");
@@ -93,5 +77,22 @@ public class DatabaseService {
         return new FirebaseRecyclerOptions.Builder<String>()
                 .setQuery(query, parser)
                 .build();
+    }
+    public static String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
+    public static Bitmap StringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
+        }
     }
 }

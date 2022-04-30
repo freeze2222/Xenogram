@@ -1,11 +1,13 @@
 package com.FinalP.finalchat.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.listeners.SimpleListener;
@@ -63,7 +65,7 @@ public class Login_activity extends AppCompatActivity {
         SimpleListener<String> listener = new SimpleListener<String>() {
             @Override
             public void onValueReg(String val, String val2) {
-                UserD userD = new UserD("Guest" + UUID.randomUUID(), new Date().getTime(), val, val2);
+                UserD userD = new UserD(new Date().getTime(), val, val2,"Default");
                 DatabaseService.addUser(userD);
             }
         };
