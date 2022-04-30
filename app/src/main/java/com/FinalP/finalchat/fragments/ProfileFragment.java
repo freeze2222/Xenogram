@@ -40,6 +40,7 @@ public class ProfileFragment extends Fragment {
     ImageView avatar;
     Bitmap bitmap;
     String currentUserEmail=DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+    String bitmapAvatarDB;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +54,20 @@ public class ProfileFragment extends Fragment {
         surname=rootView.findViewById(R.id.newSurName);
         avatar=rootView.findViewById(R.id.avatar);
         galleryButton=rootView.findViewById(R.id.galleryButton);
-        avatar.setImageResource(R.drawable.alien_without_text);
+        DatabaseService.getUser(currentUserEmail, new SimpleListener<User>() {
+            @Override
+            public void onValue(User value) {
+                bitmapAvatarDB=value.avatar;
+                if (bitmapAvatarDB.equals("Default")){
+                    avatar.setImageResource(R.drawable.alien_without_text);
+                }
+                else {
+                    avatar.setImageBitmap(DatabaseService.StringToBitMap(bitmapAvatarDB));
+                }
+            }
+        });
+
+
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

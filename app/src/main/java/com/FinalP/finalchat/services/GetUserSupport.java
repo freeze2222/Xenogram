@@ -12,6 +12,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class GetUserSupport {
 
@@ -19,9 +20,9 @@ public class GetUserSupport {
         databaseReferences.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                HashMap hashMap=(HashMap) dataSnapshot.getValue();
-                User res = new User(new UserD((Long)hashMap.get("creationDate"),hashMap.get("email").toString(),hashMap.get("name").toString(),hashMap.get("avatar").toString()));
-                callback.call(res);
+                    Log.e("DATA",dataSnapshot.toString());
+                    User res = new User(dataSnapshot.getValue(UserD.class));
+                    callback.call(res);
             }
 
             @Override
