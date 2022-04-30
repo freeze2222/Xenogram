@@ -36,7 +36,6 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
-        floatingActionButton = view.findViewById(R.id.floatingActionButton);
         userRecyclerView = view.findViewById(R.id.userRecyclerView);
         userRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 

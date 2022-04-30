@@ -33,8 +33,6 @@ public class ChatActivity extends AppCompatActivity {
     Fragment addFragment = new UserListFragment();
     Fragment current = chatFragment;
 
-    FloatingActionButton floatingActionButton;
-
     User currentUser;
 
     @SuppressLint("NonConstantResourceId")
@@ -45,7 +43,6 @@ public class ChatActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_chat);
-        initViews();
 
 
         getSupportFragmentManager()
@@ -86,18 +83,8 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-
-
-          floatingActionButton.setOnClickListener(v -> {
-          Intent intent = new Intent(v.getContext(), UserListActivity.class);
-          intent.putExtra("DIALOG_FROM", currentUser);
-          startActivity(intent);
-        });
     }
 
-    void initViews() {
-        floatingActionButton = findViewById(R.id.floatingActionButton);
-    }
 
     private void changeFragment(Fragment newFragment) {
         getSupportFragmentManager()

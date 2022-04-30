@@ -23,10 +23,6 @@
         </activity>
         <activity
             android:windowSoftInputMode="adjustPan|adjustResize"
-            android:name=".activities.UserListActivity"
-            android:exported="false" />
-        <activity
-            android:windowSoftInputMode="adjustPan|adjustResize"
             android:name=".activities.DialogActivity"
             android:exported="false" />
         <activity
