@@ -53,7 +53,9 @@ public class Login_activity extends AppCompatActivity {
             Intent signInIntent = new Intent(this, ChatActivity.class);
             signInIntent.putExtra("id", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
             signInIntent.putExtra("name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+            signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             signInLauncher.launch(signInIntent);
+            finish();
         }
     }
 
@@ -74,8 +76,10 @@ public class Login_activity extends AppCompatActivity {
             listener.onValueReg(user.getEmail(), user.getDisplayName());
 
                     Intent signInIntent = new Intent(this, ChatActivity.class);
+                    signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
                     signInLauncher.launch(signInIntent);
+                    finish();
 
                   // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
