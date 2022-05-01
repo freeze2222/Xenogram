@@ -8,7 +8,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -27,6 +31,7 @@ import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
@@ -37,9 +42,8 @@ public class ChatActivity extends AppCompatActivity {
     Fragment profileFragment=new ProfileFragment();
     Fragment addFragment = new UserListFragment();
     Fragment current = chatFragment;
-
     User currentUser;
-
+    ImageView button;
     @RequiresApi(api = Build.VERSION_CODES.R)
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -67,6 +71,14 @@ public class ChatActivity extends AppCompatActivity {
                 .commit();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        button=findViewById(R.id.logout);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                finish();
+            }
+        });
         bottomNavigationView.setItemIconTintList(null);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {

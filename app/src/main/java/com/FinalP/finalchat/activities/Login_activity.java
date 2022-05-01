@@ -13,6 +13,7 @@ import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.models.domain.UserD;
+import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.ChatService;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.firebase.ui.auth.AuthUI;
@@ -66,8 +67,30 @@ public class Login_activity extends AppCompatActivity {
             @Override
             public void onValueReg(String val, String val2) {
                 UserD userD = new UserD(new Date().getTime(), val, val2,"Default");
-                ChatService.createDialog(new User(userD),new User(new UserD(Long.parseLong("1651337216311"),"TechnicAccount","Избранное","Default")));
                 DatabaseService.addUser(userD);
+                final User[] currentUser = new User[1];
+                final User[] toUser=new User[1];
+                Callback callback=new Callback() {
+                    @Override
+                    public void call(Object arg) {
+                        DatabaseService.getUser(DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail()), new SimpleListener<User>() {
+                            @Override
+                            public void onValue(User value) {
+                                currentUser[0] =value;
+                            }
+                        });
+                        DatabaseService.getUser("technicuser", new SimpleListener<User>() {
+                            @Override
+                            public void onValue(User value) {
+                                toUser[0]=value;
+                            }
+                        });
+                        ChatService.createDialog(currentUser[0], toUser[0]);
+                    }
+                };
+                callback.call("123");
+
+                //ChatService.createDialog(new User(userD),new User(new UserD(Long.parseLong("1651422238059"),"technic@acc.ount","Избранное","Default")));
             }
         };
         //IdpResponse response = result.getIdpResponse();
@@ -77,17 +100,10 @@ public class Login_activity extends AppCompatActivity {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             assert user != null;
             listener.onValueReg(user.getEmail(), user.getDisplayName());
-
                     Intent signInIntent = new Intent(this, ChatActivity.class);
                     signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
                     signInLauncher.launch(signInIntent);
                     finish();
-
-                  // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
-
             }}
 }

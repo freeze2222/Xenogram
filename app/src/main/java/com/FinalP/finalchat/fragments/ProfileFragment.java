@@ -77,8 +77,13 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onValue(User value) {
                 String[] array=value.name.split(" ");
-                name.setText(array[0]);
-                surname.setText(array[1]);
+                if (array.length>1){
+                    name.setText(array[0]);
+                    surname.setText(array[1]);
+                }
+                else {
+                    name.setText(array[0]);
+                }
             }
         });
         confirmChanges.setOnClickListener(new View.OnClickListener() {

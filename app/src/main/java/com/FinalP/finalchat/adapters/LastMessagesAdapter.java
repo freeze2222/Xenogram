@@ -69,15 +69,6 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
         }
 
         public void bind(String key, SimpleListener<String> openChat) throws InterruptedException, ExecutionException {
-            if (key.equals("TechnicAccount")){
-                emailView.setText("");
-                emailView.setHeight(0);
-                nameView.setText("Избранное");
-                avatar.setImageResource(R.drawable.fav);
-                nameView.setHeight(80);
-                Log.e("DATAACCESS","DENIED!");
-            }
-            else {
                 DatabaseService.getNameFromKey(key, new Callback<User>() {
                     @Override
                     public void call(User arg) {
@@ -96,7 +87,6 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
                 emailView.setText(key);
 
                 Log.e("DATAACCESS","GRANTED!");
-            }
             Log.e("DATAACCESS",key);
             Log.e("DATAACCESS",currentUserEmail);
             Log.e("DATAACCESS", String.valueOf(key.equals(currentUserEmail)));

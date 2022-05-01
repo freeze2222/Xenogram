@@ -25,10 +25,6 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
     static String currentEmail= DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail());
     static String currentEmailRaw=FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
-    public UsersAdapter(ArrayList<User> users, SimpleListener<User> openChat) {
-        this.users = users;
-        this.openChat = openChat;
-    }
 
     @NonNull
     @Override
