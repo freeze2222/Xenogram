@@ -35,8 +35,6 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
     @Override
     protected void onBindViewHolder(@NonNull UserViewHolder holder, int position, @NonNull String model) {
         try {
-            Log.e("MODEL!",model);
-            Log.e("VIEW!",holder.emailView.getText().toString());
             currentEmail=model;
             if (model==holder.emailView.getText().toString()){}
             holder.bind(model, openChat);
@@ -72,24 +70,25 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
                 DatabaseService.getNameFromKey(key, new Callback<User>() {
                     @Override
                     public void call(User arg) {
-                        nameView.setText(arg.name);
-                        Log.e("DEBUG",arg.avatar);
-                        if (!arg.avatar.equals("Default")) {
-                            avatar.setImageBitmap(DatabaseService.StringToBitMap(arg.avatar));
-                            Log.e("DEBUG",arg.avatar);
-                            Log.e("DEBUG","SETTINGFROMDB");
-                        } else {
-                            avatar.setImageResource(R.drawable.alien_without_text);
-                            Log.e("DEBUG","SETTINGDEFAULT");
+                        if (arg.id.equals("technicaccount")){
+                            avatar.setImageResource(R.drawable.fav);
+                            nameView.setText("Избранное");
+                            emailView.setText("");
+                            emailView.setHeight(0);
+                            emailView.setWidth(0);
+                        }
+                        else {
+                            nameView.setText(arg.name);
+                            if (!arg.avatar.equals("Default")) {
+                                avatar.setImageBitmap(DatabaseService.StringToBitMap(arg.avatar));
+                            } else {
+                                avatar.setImageResource(R.drawable.alien_without_text);
+                            }
                         }
                     }
                 });
                 emailView.setText(key);
 
-                Log.e("DATAACCESS","GRANTED!");
-            Log.e("DATAACCESS",key);
-            Log.e("DATAACCESS",currentUserEmail);
-            Log.e("DATAACCESS", String.valueOf(key.equals(currentUserEmail)));
             rootLayout.setOnClickListener(v -> {
                 openChat.onValue(DatabaseService.reformString(key));
             });

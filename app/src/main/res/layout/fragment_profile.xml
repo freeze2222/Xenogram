@@ -16,12 +16,11 @@
             android:id="@+id/confirmChanges"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="48dp"
             android:text="Сохранить"
-            app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName4"
-            app:layout_constraintHorizontal_bias="0.516"
-            app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName4"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName4" />
+            app:layout_constraintEnd_toEndOf="@+id/idField"
+            app:layout_constraintStart_toStartOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
         <ImageView
             android:id="@+id/avatar"
@@ -71,26 +70,10 @@
             android:hint="Фамилия"
             android:inputType="textPersonName"
             android:minHeight="48dp"
-            android:textColor="#757575"
             app:layout_constraintEnd_toEndOf="@+id/newName"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/newName"
             app:layout_constraintTop_toBottomOf="@+id/newName" />
-
-        <EditText
-            android:id="@+id/editTextTextPersonName4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:ems="10"
-            android:hint="//unused"
-            android:inputType="textPersonName"
-            android:minHeight="48dp"
-            android:textColor="#757575"
-            app:layout_constraintEnd_toEndOf="@+id/newSurName"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/newSurName"
-            app:layout_constraintTop_toBottomOf="@+id/newSurName" />
 
         <Button
             android:id="@+id/galleryButton"
@@ -102,6 +85,30 @@
             app:layout_constraintHorizontal_bias="0.45"
             app:layout_constraintStart_toStartOf="@+id/avatar"
             app:layout_constraintTop_toBottomOf="@+id/avatar" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="20dp"
+            android:text="Текущий ID :"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="#9057E3"
+            app:layout_constraintEnd_toStartOf="@+id/idField"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/newSurName"
+            app:layout_constraintTop_toBottomOf="@+id/newSurName" />
+
+        <TextView
+            android:id="@+id/idField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Test"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            app:layout_constraintEnd_toEndOf="@+id/newSurName"
+            app:layout_constraintTop_toBottomOf="@+id/newSurName" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

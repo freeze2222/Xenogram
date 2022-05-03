@@ -58,11 +58,6 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         }
 
         public void bind(User user, SimpleListener<User> openChat) {
-            Log.e("!!!III!!!",currentEmail+" : "+user.email);
-            if (user.email.equals(currentEmailRaw)||user.email.equals("TechnicAccount")){
-                itemView.setVisibility(View.GONE);
-                itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
-            }
             nameView.setText(user.name);
             emailView.setText(user.email);
             avatarView.setImageResource(R.drawable.alien);

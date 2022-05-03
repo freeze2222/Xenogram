@@ -66,36 +66,29 @@ public class Login_activity extends AppCompatActivity {
         SimpleListener<String> listener = new SimpleListener<String>() {
             @Override
             public void onValueReg(String val, String val2) {
+
                 UserD userD = new UserD(new Date().getTime(), val, val2,"Default");
                 DatabaseService.addUser(userD);
-                final User[] currentUser = new User[1];
-                final User[] toUser=new User[1];
-                Callback callback=new Callback() {
+
+                addFav(new Callback() {
                     @Override
                     public void call(Object arg) {
-                        DatabaseService.getUser(DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail()), new SimpleListener<User>() {
-                            @Override
-                            public void onValue(User value) {
-                                currentUser[0] =value;
-                            }
-                        });
-                        DatabaseService.getUser("technicuser", new SimpleListener<User>() {
-                            @Override
-                            public void onValue(User value) {
-                                toUser[0]=value;
-                            }
-                        });
-                        ChatService.createDialog(currentUser[0], toUser[0]);
+                        User[] users=new User[2];
+                        users= (User[]) arg;
+                        if (users[0]==null||users[1]==null){
+                            Log.e("NULL!!!","NULL!");
+                            Log.e("NULL!!!", String.valueOf(users[0]));
+                            Log.e("NULL!!!", String.valueOf(users[1]));
+                        }
+                        ChatService.createDialog(users[0],users[1]);
                     }
-                };
-                callback.call("123");
+                });
 
                 //ChatService.createDialog(new User(userD),new User(new UserD(Long.parseLong("1651422238059"),"technic@acc.ount","Избранное","Default")));
             }
         };
         //IdpResponse response = result.getIdpResponse();
 
-        final User[] currentUser = new User[1];
         if (result.getResultCode() == RESULT_OK) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             assert user != null;
@@ -106,4 +99,21 @@ public class Login_activity extends AppCompatActivity {
                     signInLauncher.launch(signInIntent);
                     finish();
             }}
-}
+    public void addFav(Callback callback){
+        User[] users=new User[2];
+        DatabaseService.getUser(DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail()), new SimpleListener<User>() {
+            @Override
+            public void onValue(User value) {
+                users[0] =value;
+            }
+        });
+        DatabaseService.getUser("technicaccount", new SimpleListener<User>() {
+            @Override
+            public void onValue(User value) {
+                users[1]=value;
+                callback.call(users);
+            }
+        });
+
+    };
+    }
