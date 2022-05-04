@@ -23,6 +23,7 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseUserMetadata;
 
 import java.util.Arrays;
 import java.util.Base64;
@@ -52,6 +53,7 @@ public class Login_activity extends AppCompatActivity {
                     .createSignInIntentBuilder()
                     .setAvailableProviders(providers)
                     .setLogo(R.drawable.alien)
+                    .setTheme(com.google.android.material.R.style.Base_Theme_Material3_Dark)
                     .setTosAndPrivacyPolicyUrls("Тут ничего нет", "Серьёзно")
                     .build();
             signInLauncher.launch(signInIntent);
@@ -66,11 +68,12 @@ public class Login_activity extends AppCompatActivity {
     }
 
     private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
         SimpleListener<String> listener = new SimpleListener<String>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onValueReg(String val, String val2) {
-
                 UserD userD = new UserD(new Date().getTime(), val, val2,"Default");
                 DatabaseService.addUser(userD);
 
@@ -83,21 +86,22 @@ public class Login_activity extends AppCompatActivity {
                     }
                 });
 
-                //ChatService.createDialog(new User(userD),new User(new UserD(Long.parseLong("1651422238059"),"technic@acc.ount","Избранное","Default")));
             }
         };
-        //IdpResponse response = result.getIdpResponse();
-
-        if (result.getResultCode() == RESULT_OK) {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            assert user != null;
+        FirebaseUserMetadata metadata = FirebaseAuth.getInstance().getCurrentUser().getMetadata();
+        if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
             listener.onValueReg(user.getEmail(), user.getDisplayName());
-                    Intent signInIntent = new Intent(this, ChatActivity.class);
-                    signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
-                    signInLauncher.launch(signInIntent);
-                    finish();
-            }}
+        }
+        if (result.getResultCode() == RESULT_OK) {
+            Intent signInIntent = new Intent(this, ChatActivity.class);
+            signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
+            signInLauncher.launch(signInIntent);
+            finish();
+        }}
+
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addFav(Callback callback){
 

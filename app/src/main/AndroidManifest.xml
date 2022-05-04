@@ -4,8 +4,8 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
-
     <application
+        android:windowSoftInputMode="adjustResize"
         android:allowBackup="true"
         android:icon="@drawable/alien"
         android:label="@string/app_name"
@@ -14,7 +14,6 @@
         android:theme="@style/Theme.FinalChat">
 
         <activity
-            android:windowSoftInputMode="adjustPan|adjustResize"
             android:name=".activities.Login_activity"
             android:exported="true">
             <intent-filter>
@@ -24,11 +23,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:windowSoftInputMode="adjustPan|adjustResize"
             android:name=".activities.DialogActivity"
             android:exported="false" />
         <activity
-            android:windowSoftInputMode="adjustPan|adjustResize"
             android:name=".activities.ChatActivity"
             android:exported="false" />
     </application>

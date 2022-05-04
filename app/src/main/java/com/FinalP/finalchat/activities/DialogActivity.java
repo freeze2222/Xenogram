@@ -56,10 +56,9 @@ public class DialogActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_dialog);
-
         initUsers();
-
         initViews();
+
         backButton.setOnClickListener(view -> finish());
 
         sendView.setOnClickListener(v -> {
