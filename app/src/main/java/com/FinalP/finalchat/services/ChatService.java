@@ -1,5 +1,7 @@
 package com.FinalP.finalchat.services;
 
+import android.util.Log;
+
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.models.domain.GroupD;
 import com.FinalP.finalchat.models.domain.GroupMetadataD;
@@ -31,6 +33,7 @@ public class ChatService {
     }
 
     public static Task<Void> sendMessage(String text, User currentUser, User toUser) {
+        Log.e("DEBUG!",currentUser.id);
         MessageD message = new MessageD(text, false, false, currentUser.id, new Date().getTime());
 //        ...
         return dialogsRef(currentUser, toUser).child("messages").push().setValue(message);

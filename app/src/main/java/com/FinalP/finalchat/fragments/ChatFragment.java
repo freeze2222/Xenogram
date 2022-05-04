@@ -53,8 +53,8 @@ public class ChatFragment extends Fragment {
                                     @Override
                                     public void onValue(User value) {
                                         Intent intent = new Intent(getContext(), DialogActivity.class);
-                                        intent.putExtra("DIALOG_WITH", user);
-                                        intent.putExtra("DIALOG_FROM", value);
+                                        intent.putExtra("DIALOG_WITH", value);
+                                        intent.putExtra("DIALOG_FROM", user);
                                         startActivity(intent);
                                     }
                                 });

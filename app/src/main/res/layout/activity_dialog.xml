@@ -37,6 +37,7 @@
         android:id="@+id/dialogChatView"
         android:layout_width="0dp"
         android:layout_height="613dp"
+        android:clipToPadding="true"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
