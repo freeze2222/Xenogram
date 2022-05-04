@@ -2,10 +2,12 @@ package com.FinalP.finalchat.activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -23,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -64,6 +67,7 @@ public class Login_activity extends AppCompatActivity {
 
     private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
         SimpleListener<String> listener = new SimpleListener<String>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onValueReg(String val, String val2) {
 
@@ -75,11 +79,6 @@ public class Login_activity extends AppCompatActivity {
                     public void call(Object arg) {
                         User[] users=new User[2];
                         users= (User[]) arg;
-                        if (users[0]==null||users[1]==null){
-                            Log.e("NULL!!!","NULL!");
-                            Log.e("NULL!!!", String.valueOf(users[0]));
-                            Log.e("NULL!!!", String.valueOf(users[1]));
-                        }
                         ChatService.createDialog(users[0],users[1]);
                     }
                 });
@@ -99,7 +98,9 @@ public class Login_activity extends AppCompatActivity {
                     signInLauncher.launch(signInIntent);
                     finish();
             }}
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void addFav(Callback callback){
+
         User[] users=new User[2];
         DatabaseService.getUser(DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail()), new SimpleListener<User>() {
             @Override

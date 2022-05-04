@@ -16,11 +16,12 @@
             android:id="@+id/confirmChanges"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="24dp"
             android:text="Сохранить"
             app:layout_constraintEnd_toEndOf="@+id/idField"
-            app:layout_constraintStart_toStartOf="@+id/textView4"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+            app:layout_constraintHorizontal_bias="0.532"
+            app:layout_constraintStart_toStartOf="@+id/idField"
+            app:layout_constraintTop_toBottomOf="@+id/idField" />
 
         <ImageView
             android:id="@+id/avatar"
@@ -87,27 +88,15 @@
             app:layout_constraintTop_toBottomOf="@+id/avatar" />
 
         <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="20dp"
-            android:text="Текущий ID :"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="#9057E3"
-            app:layout_constraintEnd_toStartOf="@+id/idField"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/newSurName"
-            app:layout_constraintTop_toBottomOf="@+id/newSurName" />
-
-        <TextView
             android:id="@+id/idField"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="36dp"
             android:text="Test"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintEnd_toEndOf="@+id/newSurName"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="@+id/newSurName"
             app:layout_constraintTop_toBottomOf="@+id/newSurName" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

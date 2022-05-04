@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.FinalP.finalchat.R;
@@ -41,6 +42,7 @@ public class ProfileFragment extends Fragment {
     EditText surname;
     Button galleryButton;
     ImageView avatar;
+    TextView idView;
     Bitmap bitmap;
     String currentUserEmail=DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail());
     String bitmapAvatarDB;
@@ -59,6 +61,7 @@ public class ProfileFragment extends Fragment {
         avatar=rootView.findViewById(R.id.avatar);
         galleryButton=rootView.findViewById(R.id.galleryButton);
         confirmChanges=rootView.findViewById(R.id.confirmChanges);
+        idView=rootView.findViewById(R.id.idField);
         final String[] userName = new String[1];
         final String[] userSurname = new String[1];
         DatabaseService.getUser(currentUserEmail, new SimpleListener<User>() {
@@ -86,6 +89,7 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
+        idView.setText(currentUserEmail);
         confirmChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
