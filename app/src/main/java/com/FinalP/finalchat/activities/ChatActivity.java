@@ -83,15 +83,12 @@ public class ChatActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    Log.e("DEB","HOME");
                     changeFragment(chatFragment);
                     return true;
                 case R.id.navigation_profile:
-                    Log.e("DEB","Profile");
                     changeFragment(profileFragment);
                     return true;
                 case R.id.navigation_addUser:
-                    Log.e("DEB","ClickADD");
                     changeFragment(addFragment);
             }
             return false;

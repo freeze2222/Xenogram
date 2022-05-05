@@ -65,7 +65,6 @@ public class ChatFragment extends Fragment {
                     adapter.startListening();
                     userRecyclerView.setAdapter(adapter);
                     //if (adapter.getItemCount()==0){
-                       // Log.e("WORK!!","WORK!!!");
                         //ChatService.createDialog(currentUser, new User(new UserD(true)));
                     //}
                 }

@@ -1,5 +1,6 @@
 package com.FinalP.finalchat.adapters;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,12 +79,13 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
                             emailView.setWidth(0);
                         }
                         else {
+                            DatabaseService.getPicture(arg.id, new Callback<Bitmap>() {
+                                @Override
+                                public void call(Bitmap arg) {
+                                    avatar.setImageBitmap(arg);
+                                }
+                            });
                             nameView.setText(arg.name);
-                            if (!arg.avatar.equals("Default")) {
-                                avatar.setImageBitmap(DatabaseService.StringToBitMap(arg.avatar));
-                            } else {
-                                avatar.setImageResource(R.drawable.alien_without_text);
-                            }
                         }
                     }
                 });

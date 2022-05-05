@@ -9,10 +9,13 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -55,10 +58,10 @@ public class DialogActivity extends AppCompatActivity {
         // remove title
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(getSupportActionBar()).hide();
+
         setContentView(R.layout.activity_dialog);
         initUsers();
         initViews();
-
         backButton.setOnClickListener(view -> finish());
 
         sendView.setOnClickListener(v -> {
@@ -84,6 +87,12 @@ public class DialogActivity extends AppCompatActivity {
                         .addOnFailureListener(failureListener);
 
             }
+            editTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    chatView.smoothScrollToPosition(adapter.getItemCount());
+                }
+            });
 
         });
     }
@@ -113,6 +122,7 @@ public class DialogActivity extends AppCompatActivity {
             }
         };
         adapter.startListening();
+
         chatView.setAdapter(adapter);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(RecyclerView.VERTICAL);

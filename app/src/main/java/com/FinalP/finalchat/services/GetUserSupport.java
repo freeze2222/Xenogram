@@ -20,7 +20,6 @@ public class GetUserSupport {
         databaseReferences.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Log.e("DATA",dataSnapshot.toString());
                     User res = new User(dataSnapshot.getValue(UserD.class));
                     callback.call(res);
             }

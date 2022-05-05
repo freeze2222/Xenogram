@@ -2,6 +2,8 @@ package com.FinalP.finalchat.activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -33,6 +36,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Login_activity extends AppCompatActivity {
+    String currentUserEmail;
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
             new FirebaseAuthUIActivityResultContract(),
             this::onSignInResult
@@ -74,9 +78,9 @@ public class Login_activity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onValueReg(String val, String val2) {
-                UserD userD = new UserD(new Date().getTime(), val, val2,"Default");
+                UserD userD = new UserD(new Date().getTime(), val, val2);
                 DatabaseService.addUser(userD);
-
+                currentUserEmail=userD.id;
                 addFav(new Callback() {
                     @Override
                     public void call(Object arg) {
@@ -91,14 +95,28 @@ public class Login_activity extends AppCompatActivity {
         FirebaseUserMetadata metadata = FirebaseAuth.getInstance().getCurrentUser().getMetadata();
         if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
             listener.onValueReg(user.getEmail(), user.getDisplayName());
-        }
-        if (result.getResultCode() == RESULT_OK) {
-            Intent signInIntent = new Intent(this, ChatActivity.class);
+            Bitmap bitmap = BitmapFactory.decodeResource(getBaseContext().getResources(), R.drawable.alien_without_text);
+            DatabaseService.uploadPicture(currentUserEmail, DatabaseService.BitmapToByte(bitmap), new Callback() {
+                @Override
+                public void call(Object arg) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent signInIntent = new Intent(getBaseContext(), ChatActivity.class);
+                        signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
+                        signInLauncher.launch(signInIntent);
+                        finish();
+                    }}
+                });
+            }
+        else {
+            Intent signInIntent = new Intent(getBaseContext(), ChatActivity.class);
             signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
             signInLauncher.launch(signInIntent);
             finish();
-        }}
+        }
+        }
+
 
 
 

@@ -7,11 +7,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -32,7 +34,10 @@ import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.DatabaseService;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Array;
@@ -62,20 +67,7 @@ public class ProfileFragment extends Fragment {
         galleryButton=rootView.findViewById(R.id.galleryButton);
         confirmChanges=rootView.findViewById(R.id.confirmChanges);
         idView=rootView.findViewById(R.id.idField);
-        final String[] userName = new String[1];
-        final String[] userSurname = new String[1];
-        DatabaseService.getUser(currentUserEmail, new SimpleListener<User>() {
-            @Override
-            public void onValue(User value) {
-                bitmapAvatarDB=value.avatar;
-                if (bitmapAvatarDB.equals("Default")){
-                    avatar.setImageResource(R.drawable.alien_without_text);
-                }
-                else {
-                    avatar.setImageBitmap(DatabaseService.StringToBitMap(bitmapAvatarDB));
-                }
-            }
-        });
+
         DatabaseService.getUser(currentUserEmail, new SimpleListener<User>() {
             @Override
             public void onValue(User value) {
@@ -89,6 +81,7 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
+
         idView.setText(currentUserEmail);
         confirmChanges.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +99,12 @@ public class ProfileFragment extends Fragment {
             public void onClick(View view) {
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(galleryIntent, 2);
+            }
+        });
+        DatabaseService.getPicture(currentUserEmail,new Callback<Bitmap>() {
+            @Override
+            public void call(Bitmap arg) {
+                avatar.setImageBitmap(arg);
             }
         });
         return rootView;
@@ -131,11 +130,15 @@ public class ProfileFragment extends Fragment {
                 cursor.close();
                 bitmap = BitmapFactory.decodeFile(imgDecodableString);
                 if (bitmap != null) {
-                    DatabaseService.addAvatar(currentUserEmail, DatabaseService.BitMapToString(bitmap));
                     avatar.setImageBitmap(bitmap);
+
+                    DatabaseService.uploadPicture(currentUserEmail, DatabaseService.BitmapToByte(bitmap), new Callback() {
+                        @Override
+                        public void call(Object arg) {
+                            Log.e("Uploading","Pic");
+                        }
+                    });
                 }
-
-
             }
         }
     }
