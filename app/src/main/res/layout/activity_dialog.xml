@@ -5,17 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    android:isScrollContainer="true"
     android:theme="@style/Theme.Material3.Dark"
     tools:context=".activities.DialogActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dialogChatView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="match_constraint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/back"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintWidth_percent="1"
+        tools:listitem="@layout/item_dialog_row_from_me" />
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="?attr/actionModeCloseDrawable" />
+
     <Button
+
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Отправить"
+        android:text="Send"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -27,33 +48,11 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
         android:ems="10"
-        android:hint="Сообщение"
+        android:hint="Text here"
         android:inputType="textPersonName"
         android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/dialogChatView"
-        android:layout_width="0dp"
-        android:layout_height="613dp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:listitem="@layout/item_dialog_row_from_me" />
-
-    <ImageView
-        android:id="@+id/back"
-        android:layout_width="43dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/dialogChatView"
-        app:layout_constraintEnd_toEndOf="@+id/dialogChatView"
-        app:layout_constraintHorizontal_bias="0.043"
-        app:layout_constraintStart_toStartOf="@+id/dialogChatView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.888"
-        app:srcCompat="?attr/actionModeCloseDrawable" />
 </androidx.constraintlayout.widget.ConstraintLayout>

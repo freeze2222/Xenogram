@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustPan|adjustResize"
             android:name=".activities.DialogActivity"
             android:exported="false" />
         <activity

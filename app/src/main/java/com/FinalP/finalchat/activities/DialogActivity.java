@@ -62,8 +62,8 @@ public class DialogActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dialog);
         initUsers();
         initViews();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         backButton.setOnClickListener(view -> finish());
-
         sendView.setOnClickListener(v -> {
             String text = editTextView.getText().toString();
             if (text.isEmpty()) return;

@@ -46,7 +46,7 @@ public class UserListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         View rootView=inflater.inflate(R.layout.fragment_user_list, container, false);
 
         confirm=rootView.findViewById(R.id.confirm);
