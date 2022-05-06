@@ -11,15 +11,21 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
         android:layout_height="44dp"
+        android:focusable="auto"
         android:theme="@style/Theme.Material3.Dark"
+        app:itemActiveIndicatorStyle="@style/ActiveIndicator"
+        app:itemIconTint="@drawable/selector"
+        app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/navigation" />
+        app:menu="@menu/navigation" >
+
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
     <FrameLayout
         android:id="@+id/frame_content"
-        android:layout_width="411dp"
+        android:layout_width="0dp"
         android:layout_height="598dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,26 +34,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/userRecyclerView"
-            android:layout_width="411dp"
-            android:layout_height="569dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginEnd="1dp"
-            tools:listitem="@layout/item_user_row">
-
-        </androidx.recyclerview.widget.RecyclerView>
     </FrameLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="15dp"
-        android:layout_height="31dp"
-        android:layout_marginEnd="380dp"
-        android:layout_marginBottom="700dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
+    <ImageView
+        android:id="@+id/logout"
+        android:layout_width="36dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
