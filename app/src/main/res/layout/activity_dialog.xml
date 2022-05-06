@@ -23,8 +23,8 @@
 
     <ImageView
         android:id="@+id/back"
-        android:layout_width="0dp"
-        android:layout_height="32dp"
+        android:layout_width="45dp"
+        android:layout_height="36dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="?attr/actionModeCloseDrawable" />
