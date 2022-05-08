@@ -10,6 +10,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,13 +42,15 @@ import java.util.Objects;
 
 
 public class ChatActivity extends AppCompatActivity {
-
-    Fragment chatFragment = new ChatFragment();
-    Fragment profileFragment=new ProfileFragment();
-    Fragment addFragment = new UserListFragment();
+    int btnClicks=0;
+    ChatFragment chatFragment = new ChatFragment();
+    ProfileFragment profileFragment=new ProfileFragment();
+    UserListFragment addFragment = new UserListFragment();
     Fragment current = chatFragment;
     User currentUser;
+    LastMessagesAdapter adapter;
     ImageView button;
+
     @RequiresApi(api = Build.VERSION_CODES.R)
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -62,7 +69,6 @@ public class ChatActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
                 .add(R.id.frame_content, chatFragment, "homeFragment")
                 .add(R.id.frame_content, profileFragment, "profileFragment")
                 .add(R.id.frame_content, addFragment,"addFragment")
@@ -107,13 +113,38 @@ public class ChatActivity extends AppCompatActivity {
 
 
     private void changeFragment(Fragment newFragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                .hide(current)
-                .show(newFragment)
-                .commit();
-        current = newFragment;
+        Animation fadeIn = new AlphaAnimation(1.0F, 0.0F);
+        fadeIn.setDuration(500);
+
+        View view=findViewById(R.id.frame_content);
+        if (btnClicks==0) {
+            view.startAnimation(fadeIn);
+            Animation fadeout = new AlphaAnimation(0.0F, 1.0F);
+            fadeout.setDuration(500);
+            btnClicks+=1;
+            view.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    view.startAnimation(fadeout);
+                    adapter = chatFragment.getAdapter();
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            //.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                            .hide(current)
+                            .show(newFragment)
+                            .commit();
+                    current = newFragment;
+
+                }
+            }, 500);
+            view.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    btnClicks-=1;
+                }
+            }, 750);
+        }
+
     }
 
     @Override
@@ -138,4 +169,8 @@ public class ChatActivity extends AppCompatActivity {
         int res = getBaseContext().checkCallingOrSelfPermission(permission);
         return (res == PackageManager.PERMISSION_GRANTED);
     }
+    public LastMessagesAdapter getAdapter(){
+        return adapter;
+    }
+
 }

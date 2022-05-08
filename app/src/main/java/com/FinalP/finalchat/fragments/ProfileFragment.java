@@ -1,28 +1,24 @@
 package com.FinalP.finalchat.fragments;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,23 +30,18 @@ import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.DatabaseService;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.UploadTask;
-
-import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Array;
 
 public class ProfileFragment extends Fragment {
     EditText name;
     EditText surname;
     Button galleryButton;
     ImageView avatar;
+    View animView;
     TextView idView;
     Bitmap bitmap;
+    //Animation fadeout = new AlphaAnimation(0.0F, 1.0F);
     String currentUserEmail=DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-    String bitmapAvatarDB;
     Button confirmChanges;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +58,9 @@ public class ProfileFragment extends Fragment {
         galleryButton=rootView.findViewById(R.id.galleryButton);
         confirmChanges=rootView.findViewById(R.id.confirmChanges);
         idView=rootView.findViewById(R.id.idField);
+        animView=rootView.findViewById(R.id.animLayoutProfile);
+        //fadeout.setDuration(500);
+        //animView.startAnimation(fadeout);
 
         DatabaseService.getUser(currentUserEmail, new SimpleListener<User>() {
             @Override
@@ -142,6 +136,4 @@ public class ProfileFragment extends Fragment {
             }
         }
     }
-
-
 }

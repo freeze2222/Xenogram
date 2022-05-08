@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.FinalP.finalchat.R;
+import com.FinalP.finalchat.activities.ChatActivity;
 import com.FinalP.finalchat.activities.DialogActivity;
 import com.FinalP.finalchat.adapters.LastMessagesAdapter;
 import com.FinalP.finalchat.listeners.SimpleListener;
@@ -40,39 +41,41 @@ public class ChatFragment extends Fragment {
         userRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
         String id = getActivity().getIntent().getStringExtra("id");
-        DatabaseService.getUser(id, new SimpleListener<User>() {
-            @Override
-            public void onValue(User user) {
-                if (user != null) {
-                    currentUser = user;
-                    adapter = new LastMessagesAdapter(DatabaseService.getUsersOptions(currentUser), new SimpleListener<String>() {
-                        @Override
-                        public void onValue(String toId) {
-                            //if (id.equals(toId)) {
-                                DatabaseService.getUser(toId, new SimpleListener<User>() {
-                                    @Override
-                                    public void onValue(User value) {
-                                        Intent intent = new Intent(getContext(), DialogActivity.class);
-                                        intent.putExtra("DIALOG_WITH", value);
-                                        intent.putExtra("DIALOG_FROM", user);
-                                        startActivity(intent);
-                                    }
-                                });
-                            //}
+        adapter=((ChatActivity)getActivity()).getAdapter();
+            DatabaseService.getUser(id, new SimpleListener<User>() {
+                @Override
+                public void onValue(User user) {
+                    if (user != null) {
+                        currentUser = user;
+                        if (adapter==null) {
+                            adapter = new LastMessagesAdapter(DatabaseService.getUsersOptions(currentUser), new SimpleListener<String>() {
+                                @Override
+                                public void onValue(String toId) {
+                                    DatabaseService.getUser(toId, new SimpleListener<User>() {
+                                        @Override
+                                        public void onValue(User value) {
+                                            Intent intent = new Intent(getContext(), DialogActivity.class);
+                                            intent.putExtra("DIALOG_WITH", value);
+                                            intent.putExtra("DIALOG_FROM", user);
+                                            startActivity(intent);
+                                        }
+                                    });
+                                }
+                            }, getContext()
+                            );
                         }
+
+                        adapter.startListening();
+                        userRecyclerView.setAdapter(adapter);
+                        registerForContextMenu(userRecyclerView);
                     }
-                    );
-                    adapter.startListening();
-                    userRecyclerView.setAdapter(adapter);
-                    //if (adapter.getItemCount()==0){
-                        //ChatService.createDialog(currentUser, new User(new UserD(true)));
-                    //}
                 }
-            }
-        });
+            });
+
 
         return view;
     }
+
 
     @Override
     public void onStart() {
@@ -86,5 +89,8 @@ public class ChatFragment extends Fragment {
     public void onStop() {
         adapter.stopListening();
         super.onStop();
+    }
+    public LastMessagesAdapter getAdapter(){
+        return adapter;
     }
 }

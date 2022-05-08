@@ -1,15 +1,20 @@
 package com.FinalP.finalchat.adapters;
 
+
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.FinalP.finalchat.R;
@@ -21,20 +26,24 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 
 
-public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMessagesAdapter.UserViewHolder> {
+public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMessagesAdapter.UserViewHolder> implements Serializable {
     SimpleListener<String> openChat;
     static String currentEmail;
     static String currentUserEmail;
-    public LastMessagesAdapter(@NonNull FirebaseRecyclerOptions<String> options, SimpleListener<String> openChat) {
+    static Context context;
+    public LastMessagesAdapter(@NonNull FirebaseRecyclerOptions<String> options, SimpleListener<String> openChat,Context context) {
         super(options);
         this.openChat = openChat;
+        LastMessagesAdapter.context =context;
     }
 
     @Override
     protected void onBindViewHolder(@NonNull UserViewHolder holder, int position, @NonNull String model) {
+        holder.itemView.setLongClickable(true);
         try {
             currentEmail=model;
             if (model==holder.emailView.getText().toString()){}
@@ -79,12 +88,8 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
                             emailView.setWidth(0);
                         }
                         else {
-                            DatabaseService.getPicture(arg.id, new Callback<Bitmap>() {
-                                @Override
-                                public void call(Bitmap arg) {
-                                    avatar.setImageBitmap(arg);
-                                }
-                            });
+
+                            setImg(arg.id);
                             nameView.setText(arg.name);
                         }
                     }
@@ -95,5 +100,28 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
                 openChat.onValue(DatabaseService.reformString(key));
             });
         }
+        public void setImg(String id){
+            getImg(new Callback() {
+                @Override
+                public void call(Object arg) {
+                    avatar.setImageBitmap((Bitmap) arg);
+                }
+            },id);
+        }
+        public static void getImg(Callback callback, String argId){
+            Thread thread= new Thread(){
+                @Override
+                public void run(){
+                    DatabaseService.getPicture(argId, new Callback<Bitmap>() {
+                        @Override
+                        public void call(Bitmap arg) {
+                            callback.call(arg);
+                        }
+                    });
+                }
+            };
+            thread.start();
+        }
     }
+
 }
