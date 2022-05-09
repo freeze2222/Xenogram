@@ -1,26 +1,20 @@
 package com.FinalP.finalchat.adapters;
 
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.listeners.SimpleListener;
-import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -28,6 +22,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 
@@ -45,7 +40,6 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
         holder.itemView.setLongClickable(true);
         try {
             currentEmail=model;
-            if (model==holder.emailView.getText().toString()){}
             holder.bind(model, openChat);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -71,53 +65,38 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
             emailView = itemView.findViewById(R.id.textViewEmail);
             avatar=itemView.findViewById(R.id.imageViewAvatar);
             rootLayout = itemView.findViewById(R.id.userLayoutId);
-            currentUserEmail=DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            currentUserEmail=DatabaseService.reformString(Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()));
             rootLayout.setOnCreateContextMenuListener(this);
 
         }
 
         public void bind(String key, SimpleListener<String> openChat) throws InterruptedException, ExecutionException {
-                DatabaseService.getNameFromKey(key, new Callback<User>() {
-                    @Override
-                    public void call(User arg) {
-                        if (arg.id.equals("technicaccount")){
-                            avatar.setImageResource(R.drawable.fav);
-                            nameView.setText("Избранное");
-                            emailView.setText("");
-                            emailView.setHeight(0);
-                            emailView.setWidth(0);
-                        }
-                        else {
+                DatabaseService.getNameFromKey(key, arg -> {
+                    if (arg.id.equals("technicaccount")){
+                        avatar.setImageResource(R.drawable.fav);
+                        nameView.setText("Избранное");
+                        emailView.setText("");
+                        emailView.setHeight(0);
+                        emailView.setWidth(0);
+                    }
+                    else {
 
-                            setImg(arg.id);
-                            nameView.setText(arg.name);
-                        }
+                        setImg(arg.id);
+                        nameView.setText(arg.name);
                     }
                 });
                 emailView.setText(key);
 
-            rootLayout.setOnClickListener(v -> {
-                openChat.onValue(DatabaseService.reformString(key));
-            });
+            rootLayout.setOnClickListener(v -> openChat.onValue(DatabaseService.reformString(key)));
         }
         public void setImg(String id){
-            getImg(new Callback() {
-                @Override
-                public void call(Object arg) {
-                    avatar.setImageBitmap((Bitmap) arg);
-                }
-            },id);
+            getImg(arg -> avatar.setImageBitmap((Bitmap) arg),id);
         }
         public static void getImg(Callback callback, String argId){
             Thread thread= new Thread(){
                 @Override
                 public void run(){
-                    DatabaseService.getPicture(argId, new Callback<Bitmap>() {
-                        @Override
-                        public void call(Bitmap arg) {
-                            callback.call(arg);
-                        }
-                    });
+                    DatabaseService.getPicture(argId, callback);
                 }
             };
             thread.start();
