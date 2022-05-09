@@ -6,17 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -35,7 +29,6 @@ import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
@@ -78,12 +71,9 @@ public class ChatActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         button=findViewById(R.id.logout);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                finish();
-            }
+        button.setOnClickListener(view -> {
+            FirebaseAuth.getInstance().signOut();
+            finish();
         });
         bottomNavigationView.setItemIconTintList(null);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -122,27 +112,19 @@ public class ChatActivity extends AppCompatActivity {
             Animation fadeout = new AlphaAnimation(0.0F, 1.0F);
             fadeout.setDuration(500);
             btnClicks+=1;
-            view.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    view.startAnimation(fadeout);
-                    adapter = chatFragment.getAdapter();
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            //.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
-                            .hide(current)
-                            .show(newFragment)
-                            .commit();
-                    current = newFragment;
+            view.postDelayed(() -> {
+                view.startAnimation(fadeout);
+                adapter = chatFragment.getAdapter();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        //.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                        .hide(current)
+                        .show(newFragment)
+                        .commit();
+                current = newFragment;
 
-                }
             }, 500);
-            view.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    btnClicks-=1;
-                }
-            }, 750);
+            view.postDelayed(() -> btnClicks-=1, 750);
         }
 
     }

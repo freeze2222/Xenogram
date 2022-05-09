@@ -35,11 +35,9 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
     SimpleListener<String> openChat;
     static String currentEmail;
     static String currentUserEmail;
-    static Context context;
-    public LastMessagesAdapter(@NonNull FirebaseRecyclerOptions<String> options, SimpleListener<String> openChat,Context context) {
+    public LastMessagesAdapter(@NonNull FirebaseRecyclerOptions<String> options, SimpleListener<String> openChat) {
         super(options);
         this.openChat = openChat;
-        LastMessagesAdapter.context =context;
     }
 
     @Override

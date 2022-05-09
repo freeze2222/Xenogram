@@ -1,17 +1,15 @@
 package com.FinalP.finalchat.activities;
 
-import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.listeners.SimpleListener;
@@ -27,13 +25,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 public class Login_activity extends AppCompatActivity {
     String currentUserEmail;
@@ -53,7 +48,7 @@ public class Login_activity extends AppCompatActivity {
                     new AuthUI.IdpConfig.PhoneBuilder().build()
             );
 
-            Intent signInIntent = AuthUI.getInstance()
+            @SuppressLint("PrivateResource") Intent signInIntent = AuthUI.getInstance()
                     .createSignInIntentBuilder()
                     .setAvailableProviders(providers)
                     .setLogo(R.drawable.alien)
@@ -81,32 +76,27 @@ public class Login_activity extends AppCompatActivity {
                 UserD userD = new UserD(new Date().getTime(), val, val2);
                 DatabaseService.addUser(userD);
                 currentUserEmail=userD.id;
-                addFav(new Callback() {
-                    @Override
-                    public void call(Object arg) {
-                        User[] users=new User[2];
-                        users= (User[]) arg;
-                        ChatService.createDialog(users[0],users[1]);
-                    }
+                addFav(arg -> {
+                    User[] users;
+                    users= (User[]) arg;
+                    ChatService.createDialog(users[0],users[1]);
                 });
 
             }
         };
         FirebaseUserMetadata metadata = FirebaseAuth.getInstance().getCurrentUser().getMetadata();
+        assert metadata != null;
         if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
             listener.onValueReg(user.getEmail(), user.getDisplayName());
             Bitmap bitmap = BitmapFactory.decodeResource(getBaseContext().getResources(), R.drawable.alien_without_text);
-            DatabaseService.uploadPicture(currentUserEmail, DatabaseService.BitmapToByte(bitmap), new Callback() {
-                @Override
-                public void call(Object arg) {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent signInIntent = new Intent(getBaseContext(), ChatActivity.class);
-                        signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
-                        signInLauncher.launch(signInIntent);
-                        finish();
-                    }}
-                });
+            DatabaseService.uploadPicture(currentUserEmail, DatabaseService.BitmapToByte(bitmap), arg -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent signInIntent = new Intent(getBaseContext(), ChatActivity.class);
+                    signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
+                    signInLauncher.launch(signInIntent);
+                    finish();
+                }});
             }
         else {
             Intent signInIntent = new Intent(getBaseContext(), ChatActivity.class);
@@ -124,7 +114,7 @@ public class Login_activity extends AppCompatActivity {
     public void addFav(Callback callback){
 
         User[] users=new User[2];
-        DatabaseService.getUser(DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail()), new SimpleListener<User>() {
+        DatabaseService.getUser(DatabaseService.reformString(Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail())), new SimpleListener<User>() {
             @Override
             public void onValue(User value) {
                 users[0] =value;
@@ -138,5 +128,5 @@ public class Login_activity extends AppCompatActivity {
             }
         });
 
-    };
     }
+}

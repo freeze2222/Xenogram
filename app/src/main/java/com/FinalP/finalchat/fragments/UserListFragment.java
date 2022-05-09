@@ -2,19 +2,16 @@ package com.FinalP.finalchat.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.activities.DialogActivity;
@@ -30,7 +27,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.EventListener;
 import java.util.Objects;
 
 public class UserListFragment extends Fragment {
@@ -46,7 +42,7 @@ public class UserListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         View rootView=inflater.inflate(R.layout.fragment_user_list, container, false);
 
         confirm=rootView.findViewById(R.id.confirm);
@@ -56,25 +52,21 @@ public class UserListFragment extends Fragment {
             if (!findEmail.equals("")){
                 userNameRef=rootRef.child("users").child(DatabaseService.reformString(findEmail));
                 this.findEmail=findEmail;
-                listener(new Callback() {
-                    @Override
-                    public void call(Object arg) {
-                        Log.e("CALLING!","WORK!");
-                        User[] list= (User[]) arg;
-                        User currentUser=list[0];
-                        User toUser=list[1];
-                        if (currentUser!=null&&toUser!=null&& !toUser.id.equals(currentUser.id) && !toUser.id.equals("TechnicAccount")) {
-                            ChatService.createDialog(currentUser, toUser);
-                            Intent intent = new Intent(getContext(), DialogActivity.class);
-                            intent.putExtra("DIALOG_WITH", toUser);
-                            intent.putExtra("DIALOG_FROM", currentUser);
-                            startActivity(intent);
-                        }
-                        else {
-                            Log.e("EXCEPTION!","NULL! "+currentUser+" : "+toUser);
-                        }
+                listener(arg -> {
+                    Log.e("CALLING!","WORK!");
+                    User[] list= (User[]) arg;
+                    User currentUser=list[0];
+                    User toUser=list[1];
+                    if (currentUser!=null&&toUser!=null&& !toUser.id.equals(currentUser.id) && !toUser.id.equals("TechnicAccount")) {
+                        ChatService.createDialog(currentUser, toUser);
+                        Intent intent = new Intent(getContext(), DialogActivity.class);
+                        intent.putExtra("DIALOG_WITH", toUser);
+                        intent.putExtra("DIALOG_FROM", currentUser);
+                        startActivity(intent);
                     }
-
+                    else {
+                        Log.e("EXCEPTION!","NULL! "+currentUser+" : "+toUser);
+                    }
                 });
 
 
@@ -90,7 +82,7 @@ public class UserListFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
-                    DatabaseService.getUser(DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail()), new SimpleListener<User>() {
+                    DatabaseService.getUser(DatabaseService.reformString(Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail())), new SimpleListener<User>() {
                         @Override
                         public void onValue(User user) {
                             if (user != null) {

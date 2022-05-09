@@ -2,7 +2,6 @@ package com.FinalP.finalchat.services;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,8 +11,6 @@ import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.models.domain.UserD;
 import com.firebase.ui.database.ClassSnapshotParser;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +22,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class DatabaseService {
@@ -35,9 +31,6 @@ public class DatabaseService {
                 .getReference("users/" + id.replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
     }
 
-    public static void addAvatar(String userId,String bitmapPicBase64){
-        usersRef(userId+"/avatar").setValue(bitmapPicBase64);
-    }
     public static void addUser(UserD user) {
         DatabaseReference ref = usersRef(user.email);
         ref.setValue(user);
@@ -78,28 +71,19 @@ public class DatabaseService {
     public static void uploadPicture(String id,byte[] pic,Callback callback){
         StorageReference imgStorage= FirebaseStorage.getInstance().getReference().child("images/users/"+id+"/avatar.png");
         UploadTask uploadTask = imgStorage.putBytes(pic);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                //TODO Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                callback.call(null);
-                //TODO taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                //TODO ...
-            }
+        uploadTask.addOnFailureListener(exception -> {
+            //TODO Handle unsuccessful uploads
+        }).addOnSuccessListener(taskSnapshot -> {
+            callback.call(null);
+            //TODO taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+            //TODO ...
         });
     }
     public static void getPicture(String id,Callback<Bitmap> callback){
         StorageReference imgStorage= FirebaseStorage.getInstance().getReference().child("images/users/"+id+"/avatar.png");
-        imgStorage.getBytes(99999999L *999999).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                Log.e("BYTES", Arrays.toString(bytes));
-                callback.call(DatabaseService.ByteToBitmap(bytes));
-            }
+        imgStorage.getBytes(99999999L *999999).addOnSuccessListener(bytes -> {
+            Log.e("BYTES", Arrays.toString(bytes));
+            callback.call(DatabaseService.ByteToBitmap(bytes));
         });
     }
     public static FirebaseRecyclerOptions<String> getUsersOptions(User user) {

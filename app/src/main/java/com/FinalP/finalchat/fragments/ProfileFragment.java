@@ -7,30 +7,26 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
-import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 public class ProfileFragment extends Fragment {
     EditText name;
@@ -41,7 +37,7 @@ public class ProfileFragment extends Fragment {
     TextView idView;
     Bitmap bitmap;
     //Animation fadeout = new AlphaAnimation(0.0F, 1.0F);
-    String currentUserEmail=DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+    String currentUserEmail=DatabaseService.reformString(Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()));
     Button confirmChanges;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,8 +55,6 @@ public class ProfileFragment extends Fragment {
         confirmChanges=rootView.findViewById(R.id.confirmChanges);
         idView=rootView.findViewById(R.id.idField);
         animView=rootView.findViewById(R.id.animLayoutProfile);
-        //fadeout.setDuration(500);
-        //animView.startAnimation(fadeout);
 
         DatabaseService.getUser(currentUserEmail, new SimpleListener<User>() {
             @Override
@@ -77,30 +71,19 @@ public class ProfileFragment extends Fragment {
         });
 
         idView.setText(currentUserEmail);
-        confirmChanges.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String nameUser=name.getText().toString();
-                String surnameUser=surname.getText().toString();
-                if (!nameUser.equals("")&&!surnameUser.equals("")){
-                    DatabaseService.updateUserName(currentUserEmail,nameUser+" "+surnameUser);
-                    Toast.makeText(getContext(),"Успешно!",Toast.LENGTH_LONG).show();
-                }
+        confirmChanges.setOnClickListener(view -> {
+            String nameUser=name.getText().toString();
+            String surnameUser=surname.getText().toString();
+            if (!nameUser.equals("")&&!surnameUser.equals("")){
+                DatabaseService.updateUserName(currentUserEmail,nameUser+" "+surnameUser);
+                Toast.makeText(getContext(),"Успешно!",Toast.LENGTH_LONG).show();
             }
         });
-        galleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, 2);
-            }
+        galleryButton.setOnClickListener(view -> {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(galleryIntent, 2);
         });
-        DatabaseService.getPicture(currentUserEmail,new Callback<Bitmap>() {
-            @Override
-            public void call(Bitmap arg) {
-                avatar.setImageBitmap(arg);
-            }
-        });
+        DatabaseService.getPicture(currentUserEmail, arg -> avatar.setImageBitmap(arg));
         return rootView;
     }
     @Override
@@ -115,7 +98,7 @@ public class ProfileFragment extends Fragment {
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
                 // Get the cursor
-                Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                Cursor cursor = requireActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
                 // Move to first row
                 cursor.moveToFirst();
 
@@ -126,12 +109,7 @@ public class ProfileFragment extends Fragment {
                 if (bitmap != null) {
                     avatar.setImageBitmap(bitmap);
 
-                    DatabaseService.uploadPicture(currentUserEmail, DatabaseService.BitmapToByte(bitmap), new Callback() {
-                        @Override
-                        public void call(Object arg) {
-                            Log.e("Uploading","Pic");
-                        }
-                    });
+                    DatabaseService.uploadPicture(currentUserEmail, DatabaseService.BitmapToByte(bitmap), arg -> Log.e("Uploading","Pic"));
                 }
             }
         }
