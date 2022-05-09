@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -61,7 +62,7 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
         return new UserViewHolder(view);
     }
 
-    static class UserViewHolder extends RecyclerView.ViewHolder {
+    static class UserViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         TextView nameView;
         TextView emailView;
         ImageView avatar;
@@ -73,6 +74,7 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
             avatar=itemView.findViewById(R.id.imageViewAvatar);
             rootLayout = itemView.findViewById(R.id.userLayoutId);
             currentUserEmail=DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            rootLayout.setOnCreateContextMenuListener(this);
 
         }
 
@@ -122,6 +124,15 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
             };
             thread.start();
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            contextMenu.setHeaderTitle("Выберите действие");
+            contextMenu.add(this.getAdapterPosition(),121,0,"Удалить пользователя");
+            contextMenu.add(this.getAdapterPosition(),122,0,"...");
+
+        }
+
     }
 
 }
