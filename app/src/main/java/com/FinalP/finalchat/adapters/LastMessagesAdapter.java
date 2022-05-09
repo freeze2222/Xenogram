@@ -78,6 +78,7 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
                         emailView.setText("");
                         emailView.setHeight(0);
                         emailView.setWidth(0);
+
                     }
                     else {
 
