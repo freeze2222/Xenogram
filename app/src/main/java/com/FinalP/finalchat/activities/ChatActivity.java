@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -27,9 +28,12 @@ import com.FinalP.finalchat.fragments.ProfileFragment;
 import com.FinalP.finalchat.fragments.UserListFragment;
 import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
+import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.DatabaseService;
+import com.FinalP.finalchat.services.FirebaseMessagingServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Objects;
 
@@ -95,9 +99,11 @@ public class ChatActivity extends AppCompatActivity {
             public void onValue(User user) {
                 if (user != null) {
                     currentUser = user;
+                    FirebaseMessagingServices.checkToken();
                 }
             }
         });
+
 
     }
 

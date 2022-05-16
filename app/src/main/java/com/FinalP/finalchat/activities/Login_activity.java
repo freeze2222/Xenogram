@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.RequiresApi;
@@ -18,12 +19,14 @@ import com.FinalP.finalchat.models.domain.UserD;
 import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.ChatService;
 import com.FinalP.finalchat.services.DatabaseService;
+import com.FinalP.finalchat.services.FirebaseMessagingServices;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -97,6 +100,7 @@ public class Login_activity extends AppCompatActivity {
                     signInLauncher.launch(signInIntent);
                     finish();
                 }});
+            FirebaseMessagingServices.checkToken();
             }
         else {
             Intent signInIntent = new Intent(getBaseContext(), ChatActivity.class);
@@ -104,6 +108,7 @@ public class Login_activity extends AppCompatActivity {
             signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
             signInLauncher.launch(signInIntent);
             finish();
+            FirebaseMessagingServices.checkToken();
         }
         }
 

@@ -3,9 +3,6 @@
 package com.FinalP.finalchat.activities;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,8 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,14 +22,13 @@ import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.adapters.MessageAdapter;
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.ChatService;
+import com.FinalP.finalchat.services.FirebaseMessagingServices;
 import com.google.android.gms.tasks.OnFailureListener;
 
 import java.util.Objects;
 
 
 public class DialogActivity extends AppCompatActivity {
-    int notificationID = 404;
-    String ChannelID = "DefaultChannel";
     RecyclerView chatView;
     Button sendView;
     ImageView backButton;
@@ -73,6 +67,7 @@ public class DialogActivity extends AppCompatActivity {
                                     editTextView.getText().clear();
                                     adapter.notifyDataSetChanged();
                                     chatView.smoothScrollToPosition(adapter.getItemCount());
+
                                 })
                                 .addOnFailureListener(failureListener)).addOnFailureListener(failureListener);
             } else {
@@ -81,6 +76,10 @@ public class DialogActivity extends AppCompatActivity {
                             editTextView.getText().clear();
                             adapter.notifyDataSetChanged();
                             chatView.smoothScrollToPosition(adapter.getItemCount());
+                            FirebaseMessagingServices.getUserToken(toUser.id, arg -> {
+                                FirebaseMessagingServices.sendPushedNotification(arg);
+                                Log.e("TAGGER","call");
+                            });
                         })
                         .addOnFailureListener(failureListener);
 
@@ -106,12 +105,6 @@ public class DialogActivity extends AppCompatActivity {
             @Override
             public void onDataChanged() {
                 chatView.smoothScrollToPosition(adapter.getItemCount());
-                if (currentUser.id.equals(adapter.currentUser.id)) {
-                    Log.e("TODO","TODO");
-                } else {
-                    notifySend();
-                }
-
             }
         };
         adapter.startListening();
@@ -141,21 +134,6 @@ public class DialogActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    public void notifySend() {
-        Intent pendingTempIntent = new Intent(getApplicationContext(), ChatActivity.class);
-        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, pendingTempIntent, 0);
-        Notification builder = new NotificationCompat.Builder(this, ChannelID)
-                .setSmallIcon(R.drawable.alien)
-                .setContentTitle("С вами пытается кто-то связаться!")
-                .setContentText("Новое сообщение!")
-                .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setContentIntent(pendingIntent).build();
-        builder.vibrate = new long[]{1000, 1000, 1000, 1000, 1000};
 
-        NotificationManagerCompat.from(this).notify(notificationID, builder);
-
-
-    }
 
 }
