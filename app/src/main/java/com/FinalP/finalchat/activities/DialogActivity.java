@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.adapters.MessageAdapter;
 import com.FinalP.finalchat.models.application.User;
+import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.ChatService;
 import com.FinalP.finalchat.services.FirebaseMessagingServices;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -80,12 +81,21 @@ public class DialogActivity extends AppCompatActivity {
                                 FirebaseMessagingServices.sendPushedNotification(arg);
                                 Log.e("TAGGER","call");
                             });
+                            ChatService.addToMessagesCount(toUser.id,currentUser.id);
                         })
                         .addOnFailureListener(failureListener);
 
             }
             editTextView.setOnClickListener(view -> chatView.smoothScrollToPosition(adapter.getItemCount()));
 
+        });
+        ChatService.whoseCounter(toUser.id, currentUser.id, new Callback() {
+            @Override
+            public void call(Object arg) {
+                if (arg.equals(currentUser.id)){
+                    ChatService.removeCounter(toUser.id,currentUser.id);
+                }
+            }
         });
     }
 

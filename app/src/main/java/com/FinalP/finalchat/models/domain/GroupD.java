@@ -7,11 +7,15 @@ import java.util.Objects;
 
 public class GroupD {
     public GroupMetadataD metadata;
+    public int unread;
+    public String unread_property;
     public Map<String, MessageD> messages;
 
-    public GroupD(GroupMetadataD metadata, Map<String, MessageD> messages) {
+    public GroupD(GroupMetadataD metadata, Map<String, MessageD> messages,int unread,String unread_property) {
         this.metadata = metadata;
         this.messages = messages;
+        this.unread=unread;
+        this.unread_property=unread_property;
     }
 
     @Override
@@ -27,12 +31,4 @@ public class GroupD {
         return Objects.hash(metadata, messages);
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "DialogD{" +
-                "metadata=" + metadata +
-                ", messages=" + messages +
-                '}';
-    }
 }

@@ -2,6 +2,7 @@ package com.FinalP.finalchat.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +32,10 @@ public class ChatFragment extends Fragment {
 
     RecyclerView userRecyclerView;
 
-    LastMessagesAdapter adapter;
+    static LastMessagesAdapter adapter;
+
+    final Handler handler = new Handler();
+    final int delay = 10000; // 1000 milliseconds == 1 second
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,17 +66,26 @@ public class ChatFragment extends Fragment {
                                         }
                                     });
                                 }
+
                             }
                             );
-                        }
 
+                        }
+                        
                         adapter.startListening();
                         userRecyclerView.setAdapter(adapter);
                         registerForContextMenu(userRecyclerView);
                     }
                 }
             });
-
+            /*
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                notifyDataChanged();
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
+        */
 
         return view;
     }
@@ -126,5 +139,10 @@ public class ChatFragment extends Fragment {
         });
 
 
+    }
+    public static void notifyDataChanged(){
+        if (adapter!=null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 }
