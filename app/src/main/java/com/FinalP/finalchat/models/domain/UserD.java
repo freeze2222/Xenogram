@@ -7,6 +7,7 @@ public class UserD {
     public String email;
     public long createDate;
     public String id;
+    public boolean isActive;
 
     public UserD() {//required
     }

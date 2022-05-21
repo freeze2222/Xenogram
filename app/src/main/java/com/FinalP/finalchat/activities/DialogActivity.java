@@ -3,6 +3,7 @@
 package com.FinalP.finalchat.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,7 @@ import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.ChatService;
 import com.FinalP.finalchat.services.FirebaseMessagingServices;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
@@ -56,7 +58,15 @@ public class DialogActivity extends AppCompatActivity {
         initUsers();
         initViews();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        backButton.setOnClickListener(view -> finish());
+        backButton.setOnClickListener(view -> {
+            Intent intent = new Intent(this, ChatActivity.class);
+            intent.putExtra("id", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
+            intent.putExtra("name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+        ChatService.toggleActiveIndicator(toUser.id,currentUser.id);
         sendView.setOnClickListener(v -> {
             String text = editTextView.getText().toString();
             if (text.isEmpty()) return;
@@ -141,6 +151,7 @@ public class DialogActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         adapter.stopListening();
+        ChatService.toggleActiveIndicator(toUser.id,currentUser.id);
         super.onStop();
     }
 

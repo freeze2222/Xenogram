@@ -2,7 +2,6 @@ package com.FinalP.finalchat.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +19,7 @@ import com.FinalP.finalchat.adapters.LastMessagesAdapter;
 import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.Callback;
+import com.FinalP.finalchat.services.ChatService;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.FinalP.finalchat.services.WrapContentLinearLayoutManager;
 import com.google.firebase.database.DatabaseReference;
@@ -34,8 +34,6 @@ public class ChatFragment extends Fragment {
 
     static LastMessagesAdapter adapter;
 
-    final Handler handler = new Handler();
-    final int delay = 10000; // 1000 milliseconds == 1 second
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +50,7 @@ public class ChatFragment extends Fragment {
                 public void onValue(User user) {
                     if (user != null) {
                         currentUser = user;
+                        ChatService.testLinkListeners(currentUser.id);
                         if (adapter==null) {
                             adapter = new LastMessagesAdapter(DatabaseService.getUsersOptions(currentUser), new SimpleListener<String>() {
                                 @Override
@@ -63,6 +62,7 @@ public class ChatFragment extends Fragment {
                                             intent.putExtra("DIALOG_WITH", value);
                                             intent.putExtra("DIALOG_FROM", user);
                                             startActivity(intent);
+                                            getActivity().finish();
                                         }
                                     });
                                 }
@@ -78,14 +78,10 @@ public class ChatFragment extends Fragment {
                     }
                 }
             });
-            /*
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                notifyDataChanged();
-                handler.postDelayed(this, delay);
+            if (currentUser!=null){
+                ChatService.testLinkListeners(currentUser.id);
             }
-        }, delay);
-        */
+
 
         return view;
     }
@@ -103,9 +99,6 @@ public class ChatFragment extends Fragment {
     public void onStop() {
         adapter.stopListening();
         super.onStop();
-    }
-    public LastMessagesAdapter getAdapter(){
-        return adapter;
     }
 
     @Override
@@ -140,9 +133,10 @@ public class ChatFragment extends Fragment {
 
 
     }
-    public static void notifyDataChanged(){
-        if (adapter!=null) {
-            adapter.notifyDataSetChanged();
-        }
+    public static LastMessagesAdapter getAdapter(){
+        return adapter;
+    }
+    public static void notifyAdapter() {
+        adapter.notifyDataSetChanged();
     }
 }

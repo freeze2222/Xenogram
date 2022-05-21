@@ -29,6 +29,7 @@ import com.FinalP.finalchat.fragments.UserListFragment;
 import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.Callback;
+import com.FinalP.finalchat.services.ChatService;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.FinalP.finalchat.services.FirebaseMessagingServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -99,6 +100,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onValue(User user) {
                 if (user != null) {
                     currentUser = user;
+                    ChatService.testLinkListeners(currentUser.id);
                     FirebaseMessagingServices.checkToken();
                 }
             }
