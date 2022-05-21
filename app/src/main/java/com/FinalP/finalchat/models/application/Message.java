@@ -18,8 +18,6 @@ public class Message extends MessageD {
         this.id = id;
 
         text = messageD.text;
-        isRead = messageD.isRead;
-        isSent = messageD.isSent;
         fromID = messageD.fromID;
     }
 }
