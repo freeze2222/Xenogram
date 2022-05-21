@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import java.util.Objects;
 
 public class GroupMetadataD {
-    public long createDate;
+    public final long createDate;
 
     public GroupMetadataD(long createDate) {
         this.createDate = createDate;

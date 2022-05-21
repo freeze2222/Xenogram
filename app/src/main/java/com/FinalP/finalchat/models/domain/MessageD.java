@@ -13,7 +13,7 @@ public class MessageD {
     public MessageD() {
     }
 
-    public MessageD(String text, boolean isRead, boolean isSent, String fromID, long createDate) {
+    public MessageD(String text, String fromID, long createDate) {
         this.text = text;
         this.fromID = fromID;
         this.createDate = createDate;

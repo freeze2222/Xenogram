@@ -41,7 +41,7 @@ public class DialogActivity extends AppCompatActivity {
     User toUser;
 
     MessageAdapter adapter;
-    OnFailureListener failureListener = e -> {
+    final OnFailureListener failureListener = e -> {
         e.printStackTrace();
         Toast.makeText(getApplicationContext(), "Error happened!", Toast.LENGTH_SHORT).show();
     };
@@ -60,7 +60,7 @@ public class DialogActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         backButton.setOnClickListener(view -> {
             Intent intent = new Intent(this, ChatActivity.class);
-            intent.putExtra("id", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
+            intent.putExtra("id", Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
             intent.putExtra("name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -99,12 +99,9 @@ public class DialogActivity extends AppCompatActivity {
             editTextView.setOnClickListener(view -> chatView.smoothScrollToPosition(adapter.getItemCount()));
 
         });
-        ChatService.whoseCounter(toUser.id, currentUser.id, new Callback() {
-            @Override
-            public void call(Object arg) {
-                if (arg.equals(currentUser.id)){
-                    ChatService.removeCounter(toUser.id,currentUser.id);
-                }
+        ChatService.whoseCounter(toUser.id, currentUser.id, arg -> {
+            if (arg.equals(currentUser.id)){
+                ChatService.removeCounter(toUser.id,currentUser.id);
             }
         });
     }

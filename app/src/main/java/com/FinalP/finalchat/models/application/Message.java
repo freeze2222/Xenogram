@@ -5,10 +5,10 @@ import com.FinalP.finalchat.models.domain.MessageD;
 import java.util.Date;
 
 public class Message extends MessageD {
-    public String id;
-    public User from;
-    public User to;
-    public Date creationDate;
+    public final String id;
+    public final User from;
+    public final User to;
+    public final Date creationDate;
 
     public Message(MessageD messageD, User from, User to, String id) {
         this.creationDate = new Date(messageD.createDate);

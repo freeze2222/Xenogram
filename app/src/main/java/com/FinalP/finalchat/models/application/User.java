@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class User extends UserD implements Serializable {
-    public String id;
-    public Date creationDate;
+    public final String id;
+    public final Date creationDate;
 
     public User(UserD userD) {
         this.name = userD.name;

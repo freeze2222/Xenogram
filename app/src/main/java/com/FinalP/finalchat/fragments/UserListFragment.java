@@ -33,7 +33,7 @@ public class UserListFragment extends Fragment {
     EditText username;
     Button confirm;
     String findEmail;
-    DatabaseReference rootRef=FirebaseDatabase.getInstance().getReference();
+    final DatabaseReference rootRef=FirebaseDatabase.getInstance().getReference();
     DatabaseReference userNameRef;
     @Override
     public void onCreate(Bundle savedInstanceState) {

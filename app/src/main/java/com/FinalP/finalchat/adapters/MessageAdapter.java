@@ -17,9 +17,9 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 
 public abstract class MessageAdapter extends FirebaseRecyclerAdapter<MessageD, MessageAdapter.MessageViewHolder> {
-    public User currentUser;
-    public User toUser;
-    public FirebaseRecyclerOptions<MessageD> options;
+    public final User currentUser;
+    public final User toUser;
+    public final FirebaseRecyclerOptions<MessageD> options;
     public MessageAdapter(@NonNull FirebaseRecyclerOptions<MessageD> options, User currentUser, User toUser) {
         super(options);
         this.currentUser = currentUser;
@@ -58,8 +58,8 @@ public abstract class MessageAdapter extends FirebaseRecyclerAdapter<MessageD, M
     }
 
     static class MessageViewHolder extends RecyclerView.ViewHolder {
-        TextView timeView;
-        TextView textView;
+        final TextView timeView;
+        final TextView textView;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);

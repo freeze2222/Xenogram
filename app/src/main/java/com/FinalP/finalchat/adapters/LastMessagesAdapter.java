@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 
 public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMessagesAdapter.UserViewHolder> implements Serializable {
-    SimpleListener<String> openChat;
+    final SimpleListener<String> openChat;
     static String currentEmail;
     static String currentUserEmail;
 
@@ -66,11 +66,11 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
 
 
     static class UserViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
-        TextView nameView;
-        TextView emailView;
-        ImageView avatar;
-        ImageView imageView;
-        ConstraintLayout rootLayout;
+        final TextView nameView;
+        final TextView emailView;
+        final ImageView avatar;
+        final ImageView imageView;
+        final ConstraintLayout rootLayout;
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             nameView = itemView.findViewById(R.id.textViewName);
@@ -97,62 +97,56 @@ public class LastMessagesAdapter extends FirebaseRecyclerAdapter<String, LastMes
                     else {
                         setImg(argument.id);
                         nameView.setText(argument.name);
-                        ChatService.whoseCounter(key, currentUserEmail, new Callback() {
-                            @Override
-                            public void call(Object arg) {
-                                if (arg.equals(currentUserEmail)){
-                                    ChatService.getNewMessagesCount(argument.id, currentUserEmail, new Callback() {
-                                        @Override
-                                        public void call(Object arg) {
-                                            switch ((int) arg) {
-                                                case 0: {
-                                                    imageView.setVisibility(View.GONE);
-                                                    break;
-                                                }
-                                                case 1: {
-                                                    imageView.setImageResource(R.drawable.one_m);
-                                                    break;
-                                                }
-                                                case 2: {
-                                                    imageView.setImageResource(R.drawable.two_m);
-                                                    break;
-                                                }
-                                                case 3: {
-                                                    imageView.setImageResource(R.drawable.three_m);
-                                                    break;
-                                                }
-                                                case 4: {
-                                                    imageView.setImageResource(R.drawable.four_m);
-                                                    break;
-                                                }
-                                                case 5: {
-                                                    imageView.setImageResource(R.drawable.five_m);
-                                                    break;
-                                                }
-                                                case 6: {
-                                                    imageView.setImageResource(R.drawable.six_m);
-                                                    break;
-                                                }
-                                                case 7: {
-                                                    imageView.setImageResource(R.drawable.seven_m);
-                                                    break;
-                                                }
-                                                case 8: {
-                                                    imageView.setImageResource(R.drawable.eight_m);
-                                                    break;
-                                                }
-                                                case 9: {
-                                                    imageView.setImageResource(R.drawable.nine_m);
-                                                    break;
-                                                }
-                                                default: {
-                                                    imageView.setImageResource(R.drawable.lotsof_m);
-                                                    break;
-                                                }
-                                            }
+                        ChatService.whoseCounter(key, currentUserEmail, arg -> {
+                            if (arg.equals(currentUserEmail)){
+                                ChatService.getNewMessagesCount(argument.id, currentUserEmail, arg1 -> {
+                                    switch ((int) arg1) {
+                                        case 0: {
+                                            imageView.setVisibility(View.GONE);
+                                            break;
                                         }
-                                    });
-                                }
+                                        case 1: {
+                                            imageView.setImageResource(R.drawable.one_m);
+                                            break;
+                                        }
+                                        case 2: {
+                                            imageView.setImageResource(R.drawable.two_m);
+                                            break;
+                                        }
+                                        case 3: {
+                                            imageView.setImageResource(R.drawable.three_m);
+                                            break;
+                                        }
+                                        case 4: {
+                                            imageView.setImageResource(R.drawable.four_m);
+                                            break;
+                                        }
+                                        case 5: {
+                                            imageView.setImageResource(R.drawable.five_m);
+                                            break;
+                                        }
+                                        case 6: {
+                                            imageView.setImageResource(R.drawable.six_m);
+                                            break;
+                                        }
+                                        case 7: {
+                                            imageView.setImageResource(R.drawable.seven_m);
+                                            break;
+                                        }
+                                        case 8: {
+                                            imageView.setImageResource(R.drawable.eight_m);
+                                            break;
+                                        }
+                                        case 9: {
+                                            imageView.setImageResource(R.drawable.nine_m);
+                                            break;
+                                        }
+                                        default: {
+                                            imageView.setImageResource(R.drawable.lotsof_m);
+                                            break;
+                                        }
+                                    }
+                                });
                             }
                         });
 

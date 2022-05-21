@@ -37,7 +37,7 @@ public class ProfileFragment extends Fragment {
     TextView idView;
     Bitmap bitmap;
     //Animation fadeout = new AlphaAnimation(0.0F, 1.0F);
-    String currentUserEmail=DatabaseService.reformString(Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()));
+    final String currentUserEmail=DatabaseService.reformString(Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()));
     Button confirmChanges;
     @Override
     public void onCreate(Bundle savedInstanceState) {

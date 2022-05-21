@@ -62,7 +62,7 @@ public class ChatFragment extends Fragment {
                                             intent.putExtra("DIALOG_WITH", value);
                                             intent.putExtra("DIALOG_FROM", user);
                                             startActivity(intent);
-                                            getActivity().finish();
+                                            requireActivity().finish();
                                         }
                                     });
                                 }

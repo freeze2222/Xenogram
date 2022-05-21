@@ -15,6 +15,8 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -26,19 +28,14 @@ public class FirebaseMessagingServices extends FirebaseMessagingService {
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
         if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail())).child("token");
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(DatabaseService.reformString(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getEmail()))).child("token");
             databaseReference.setValue(s);
             Log.e("DONE", "GENERATED!!");
         }
     }
     public static void getUserToken(String id, Callback<String> callback){
         DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference().child("users").child(id).child("token");
-        databaseReference.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                callback.call(dataSnapshot.getValue(String.class));
-            }
-        });
+        databaseReference.get().addOnSuccessListener(dataSnapshot -> callback.call(dataSnapshot.getValue(String.class)));
     }
     public static void sendPushedNotification(final String fcmToken) {
         new AsyncTask<Void, Void, Void>() {
@@ -68,7 +65,7 @@ public class FirebaseMessagingServices extends FirebaseMessagingService {
                             .build();
                     Response response = client.newCall(request).execute();
 
-                    String finalResponse = response.body().string();
+                    String finalResponse = Objects.requireNonNull(response.body()).string();
                     Log.e("TAG", finalResponse);
                 } catch (Exception e) {
 
@@ -79,14 +76,11 @@ public class FirebaseMessagingServices extends FirebaseMessagingService {
         }.execute();
     }
     public static void checkToken(){
-        FirebaseMessagingServices.getUserToken(DatabaseService.reformString(FirebaseAuth.getInstance().getCurrentUser().getEmail()), new Callback<String>() {
-            @Override
-            public void call(String arg) {
-                if (arg==null) {
-                    FirebaseMessaging.getInstance().deleteToken();
-                    Log.e("DONE","DELETED!!");
-                    Log.e("DONE",FirebaseMessaging.getInstance().getToken().toString());
-                }
+        FirebaseMessagingServices.getUserToken(DatabaseService.reformString(Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail())), arg -> {
+            if (arg==null) {
+                FirebaseMessaging.getInstance().deleteToken();
+                Log.e("DONE","DELETED!!");
+                Log.e("DONE",FirebaseMessaging.getInstance().getToken().toString());
             }
         });
     }

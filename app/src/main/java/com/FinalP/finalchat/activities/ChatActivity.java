@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -28,22 +27,20 @@ import com.FinalP.finalchat.fragments.ProfileFragment;
 import com.FinalP.finalchat.fragments.UserListFragment;
 import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
-import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.ChatService;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.FinalP.finalchat.services.FirebaseMessagingServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Objects;
 
 
 public class ChatActivity extends AppCompatActivity {
     int btnClicks=0;
-    ChatFragment chatFragment = new ChatFragment();
-    ProfileFragment profileFragment=new ProfileFragment();
-    UserListFragment addFragment = new UserListFragment();
+    final ChatFragment chatFragment = new ChatFragment();
+    final ProfileFragment profileFragment=new ProfileFragment();
+    final UserListFragment addFragment = new UserListFragment();
     Fragment current = chatFragment;
     User currentUser;
     LastMessagesAdapter adapter;
@@ -122,7 +119,7 @@ public class ChatActivity extends AppCompatActivity {
             btnClicks+=1;
             view.postDelayed(() -> {
                 view.startAnimation(fadeout);
-                adapter = chatFragment.getAdapter();
+                adapter = ChatFragment.getAdapter();
                 getSupportFragmentManager()
                         .beginTransaction()
                         //.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
