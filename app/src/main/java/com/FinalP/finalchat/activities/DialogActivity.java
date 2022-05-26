@@ -3,15 +3,27 @@
 package com.FinalP.finalchat.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -22,20 +34,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.FinalP.finalchat.R;
 import com.FinalP.finalchat.adapters.MessageAdapter;
 import com.FinalP.finalchat.models.application.User;
-import com.FinalP.finalchat.services.Callback;
 import com.FinalP.finalchat.services.ChatService;
+import com.FinalP.finalchat.services.DatabaseService;
 import com.FinalP.finalchat.services.FirebaseMessagingServices;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Objects;
+import java.util.UUID;
 
 
 public class DialogActivity extends AppCompatActivity {
     RecyclerView chatView;
-    Button sendView;
+    ImageView sendView;
     ImageView backButton;
+    ImageView moreOptions;
     EditText editTextView;
+    int btnClicks=0;
 
     User currentUser;
     User toUser;
@@ -67,13 +85,56 @@ public class DialogActivity extends AppCompatActivity {
             finish();
         });
         ChatService.toggleActiveIndicator(toUser.id,currentUser.id);
+        moreOptions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = (LayoutInflater)
+                        getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = inflater.inflate(R.layout.popup_more_send_options, null);
+
+                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
+                popupView.findViewById(R.id.chooseImg).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        selectImageFromGallery();
+                        popupWindow.dismiss();
+
+                    }
+                });
+                popupView.findViewById(R.id.chooseVideo).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        selectVideoFromGallery();
+                        popupWindow.dismiss();
+
+                    }
+                });
+
+
+
+
+                popupWindow.setAnimationStyle(R.style.popup_window_animation);
+
+                popupWindow.setElevation(20);
+                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+                popupView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        popupWindow.dismiss();
+                        return true;
+                    }
+                });
+            }
+        });
         sendView.setOnClickListener(v -> {
             String text = editTextView.getText().toString();
             if (text.isEmpty()) return;
 
             if (adapter.getItemCount() == 0) {
                 ChatService.createDialog(currentUser, toUser)
-                        .addOnSuccessListener(unused -> ChatService.sendMessage(text, currentUser, toUser)
+                        .addOnSuccessListener(unused -> ChatService.sendMessage(text, currentUser, toUser,"text")
                                 .addOnSuccessListener(unused1 -> {
                                     editTextView.getText().clear();
                                     adapter.notifyDataSetChanged();
@@ -82,7 +143,7 @@ public class DialogActivity extends AppCompatActivity {
                                 })
                                 .addOnFailureListener(failureListener)).addOnFailureListener(failureListener);
             } else {
-                ChatService.sendMessage(text, currentUser, toUser)
+                ChatService.sendMessage(text, currentUser, toUser,"text")
                         .addOnSuccessListener(unused -> {
                             editTextView.getText().clear();
                             adapter.notifyDataSetChanged();
@@ -115,9 +176,10 @@ public class DialogActivity extends AppCompatActivity {
         backButton = findViewById(R.id.back);
         chatView = findViewById(R.id.dialogChatView);
         sendView = findViewById(R.id.button);
+        moreOptions=findViewById(R.id.moreOptions);
         editTextView = findViewById(R.id.editTextTextPersonName2);
 
-        adapter = new MessageAdapter(ChatService.getUserOptions(currentUser, toUser), currentUser, toUser) {
+        adapter = new MessageAdapter(ChatService.getUserOptions(currentUser, toUser), currentUser, toUser,getApplicationContext()) {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChanged() {
@@ -151,7 +213,56 @@ public class DialogActivity extends AppCompatActivity {
         ChatService.toggleActiveIndicator(toUser.id,currentUser.id);
         super.onStop();
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
+            Uri selectedImage = data.getData();
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            UUID uuid=UUID.randomUUID();
+            StorageReference imageRef = storageRef.child("messages/images/" + uuid.toString());
+            ChatService.sendMessage(uuid.toString(),currentUser,toUser,"image").addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+            DatabaseService.uploadImage(selectedImage,imageRef,false);
+            Toast.makeText(getApplicationContext(),"Загрузка началась!",Toast.LENGTH_LONG).show();
 
+        }
+        else if(requestCode == 100 && resultCode == RESULT_OK)
+        {
+            Uri videoUri= data.getData();
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            UUID uuid=UUID.randomUUID();
+            StorageReference videoRef = storageRef.child("messages/videos/" + uuid.toString());
+            DatabaseService.uploadVideo(videoUri,videoRef);
+            ChatService.sendMessage(uuid.toString(),currentUser,toUser,"video");
+            Toast.makeText(getApplicationContext(),"Загрузка началась!",Toast.LENGTH_LONG).show();
+        }
+    }
 
+    public void selectVideoFromGallery()
+    {
+        Intent intent;
+        if(android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
+        {
+            intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+        }
+        else
+        {
+            intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.INTERNAL_CONTENT_URI);
+        }
+        intent.setType("video/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent,100);
+    }
+    public void selectImageFromGallery()
+    {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, 2);
+    }
 }

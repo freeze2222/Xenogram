@@ -14,7 +14,7 @@
         android:theme="@style/Theme.FinalChat">
 
         <activity
-            android:name=".activities.Login_activity"
+            android:name=".activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

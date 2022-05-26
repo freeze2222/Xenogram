@@ -6,15 +6,16 @@ import java.util.Objects;
 
 public class MessageD {
     public String text;
-
+    public String type;
     public String fromID;
     public long createDate;
 
     public MessageD() {
     }
 
-    public MessageD(String text, String fromID, long createDate) {
+    public MessageD(String text, String fromID, long createDate, String type) {
         this.text = text;
+        this.type=type;
         this.fromID = fromID;
         this.createDate = createDate;
     }

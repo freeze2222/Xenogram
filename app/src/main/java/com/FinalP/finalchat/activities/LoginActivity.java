@@ -1,13 +1,19 @@
 package com.FinalP.finalchat.activities;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.AnyRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,17 +28,22 @@ import com.FinalP.finalchat.services.FirebaseMessagingServices;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
+import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public class Login_activity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
     String currentUserEmail;
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
             new FirebaseAuthUIActivityResultContract(),
@@ -41,8 +52,10 @@ public class Login_activity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
         Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_login);
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
@@ -67,6 +80,7 @@ public class Login_activity extends AppCompatActivity {
             signInLauncher.launch(signInIntent);
             finish();
         }
+
     }
 
     private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
@@ -91,17 +105,26 @@ public class Login_activity extends AppCompatActivity {
         assert metadata != null;
         if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
             listener.onValueReg(user.getEmail(), user.getDisplayName());
-            Bitmap bitmap = BitmapFactory.decodeResource(getBaseContext().getResources(), R.drawable.alien_without_text);
-            DatabaseService.uploadPicture(currentUserEmail, DatabaseService.BitmapToByte(bitmap), arg -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    Intent signInIntent = new Intent(getBaseContext(), ChatActivity.class);
-                    signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
+
+            Uri uri = getUriToResource(getBaseContext(),R.drawable.alien_without_text);
+
+            StorageReference reference= FirebaseStorage.getInstance().getReference().child("avatars").child(currentUserEmail);
+            Intent signInIntent = new Intent(getBaseContext(), ChatActivity.class);
+            signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            signInIntent.putExtra("id", Objects.requireNonNull(user.getEmail()).replaceAll(";", "").replaceAll("\\.", "").replaceAll("@", ""));
+
+            DatabaseService.uploadImage(uri, reference, true).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    FirebaseMessagingServices.checkToken();
                     signInLauncher.launch(signInIntent);
                     finish();
-                }});
-            FirebaseMessagingServices.checkToken();
-            }
+                }
+            });
+
+        }
+
         else {
             Intent signInIntent = new Intent(getBaseContext(), ChatActivity.class);
             signInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -111,6 +134,22 @@ public class Login_activity extends AppCompatActivity {
             FirebaseMessagingServices.checkToken();
         }
         }
+    public static final Uri getUriToResource(@NonNull Context context,
+                                             @AnyRes int resId)
+            throws Resources.NotFoundException {
+        Resources res = context.getResources();
+        /**
+         * Creates a Uri which parses the given encoded URI string.
+         * @param uriString an RFC 2396-compliant, encoded URI
+         * @throws NullPointerException if uriString is null
+         * @return Uri for this given uri string
+         */
+        Uri resUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
+                "://" + res.getResourcePackageName(resId)
+                + '/' + res.getResourceTypeName(resId)
+                + '/' + res.getResourceEntryName(resId));
+        return resUri;
+    }
 
 
 

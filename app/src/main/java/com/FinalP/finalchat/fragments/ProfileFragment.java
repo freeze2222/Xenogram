@@ -25,6 +25,8 @@ import com.FinalP.finalchat.listeners.SimpleListener;
 import com.FinalP.finalchat.models.application.User;
 import com.FinalP.finalchat.services.DatabaseService;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Objects;
 
@@ -89,28 +91,12 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == 2) {
             if (resultCode == Activity.RESULT_OK) {
-
-                //pick image from gallery
                 Uri selectedImage = data.getData();
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-                // Get the cursor
-                Cursor cursor = requireActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                // Move to first row
-                cursor.moveToFirst();
-
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String imgDecodableString = cursor.getString(columnIndex);
-                cursor.close();
-                bitmap = BitmapFactory.decodeFile(imgDecodableString);
-                if (bitmap != null) {
-                    avatar.setImageBitmap(bitmap);
-
-                    DatabaseService.uploadPicture(currentUserEmail, DatabaseService.BitmapToByte(bitmap), arg -> Log.e("Uploading","Pic"));
-                }
+                avatar.setImageURI(selectedImage);
+                StorageReference reference= FirebaseStorage.getInstance().getReference().child("avatars").child(currentUserEmail);
+                DatabaseService.uploadImage(selectedImage,reference,true);
             }
         }
     }

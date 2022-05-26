@@ -31,19 +31,17 @@ public class ChatService {
                 .child("dialogs");
     }
 
-    public static DatabaseReference dialogsRef(User userA, User userB) {
-        String[] strings = new String[]{userA.id, userB.id};
+    public static DatabaseReference getUserDialogRef(String userA, String userB) {
+        String[] strings = new String[]{userA, userB};
         Arrays.sort(strings);
         String chatId = strings[0] + "-" + strings[1];
 
         return dialogsRef().child(chatId);
     }
 
-    public static Task<Void> sendMessage(String text, User currentUser, User toUser) {
-        Log.e("DEBUG!", currentUser.id);
-        MessageD message = new MessageD(text, currentUser.id, new Date().getTime());
-//        ...
-        return dialogsRef(currentUser, toUser).child("messages").push().setValue(message);
+    public static Task<Void> sendMessage(String text, User currentUser, User toUser,String type) {
+        MessageD message = new MessageD(text, currentUser.id, new Date().getTime(),type);
+        return getUserDialogRef(currentUser.id, toUser.id).child("messages").push().setValue(message);
     }
 
     public static Task<Void> createDialog(User currentUser, User toUser) {
@@ -52,30 +50,15 @@ public class ChatService {
                 new HashMap<>(), 0, currentUser.id,
                 false,false
         );
-        return dialogsRef(currentUser, toUser).setValue(dialog)
+        return getUserDialogRef(currentUser.id, toUser.id).setValue(dialog)
                 .addOnSuccessListener(unused -> {
                     DatabaseService.usersRef(currentUser.id).child("chats/" + toUser.id).setValue(toUser.id);
                     DatabaseService.usersRef(toUser.id).child("chats/" + currentUser.id).setValue(currentUser.id);
                 });
     }
 
-    public static void getUserDialogRef(String toUser, String currentUser, Callback callback) {
-        DatabaseReference mainRef = FirebaseDatabase.getInstance().getReference().child("chat").child("dialogs");
-        mainRef.child(currentUser + "-" + toUser).get().addOnSuccessListener(dataSnapshot -> {
-            if (dataSnapshot.exists()) {
-                mainRef.child(currentUser + "-" + toUser).keepSynced(true);
-                callback.call(mainRef.child(currentUser + "-" + toUser));
-            } else {
-                mainRef.child(toUser + "-" + currentUser).keepSynced(true);
-                callback.call(mainRef.child(toUser + "-" + currentUser));
-            }
-
-        });
-    }
-
     public static void isChatActive(String toUser, String currentUser, Callback callback) {
-        getUserDialogRef(toUser, currentUser, arg -> {
-            DatabaseReference reference = (DatabaseReference) arg;
+        DatabaseReference reference = getUserDialogRef(toUser, currentUser);
             reference.child("isActiveUser1").get().addOnSuccessListener(dataSnapshotUser1 -> reference.child("isActiveUser2").get().addOnSuccessListener(dataSnapshotUser2 -> {
                 if (dataSnapshotUser1.getValue(Boolean.class) && dataSnapshotUser2.getValue(Boolean.class)) {
                     callback.call(true);
@@ -83,12 +66,10 @@ public class ChatService {
                     callback.call(false);
                 }
             }));
-        });
     }
 
     public static void toggleActiveIndicator(String toUser, String currentUser) {
-        getUserDialogRef(toUser, currentUser, arg -> {
-            DatabaseReference reference = (DatabaseReference) arg;
+            DatabaseReference reference = getUserDialogRef(toUser, currentUser);
             String[] users = reference.getKey().split("-");
             Log.e("DEB", Arrays.toString(users));
             Log.e("DEB", users[1]);
@@ -99,29 +80,20 @@ public class ChatService {
             else{
                 reference.child("isActiveUser2").get().addOnSuccessListener(dataSnapshot -> reference.child("isActiveUser2").setValue(!dataSnapshot.getValue(Boolean.class)));
             }
-        });
-    }
+        }
 
     public static void getNewMessagesCount(String toUser, String currentUser, Callback callback) {
-
-                    getUserDialogRef(toUser, currentUser, arg -> {
-                        DatabaseReference userRef = (DatabaseReference) arg;
+                        DatabaseReference userRef =getUserDialogRef(toUser, currentUser);
                         userRef.child("unread").get().addOnSuccessListener(dataSnapshot -> {
-                                    Log.e("DATAFALSE", String.valueOf(dataSnapshot));
-                                    Log.e("DATAFALSE", String.valueOf(dataSnapshot.getValue()));
                                     callback.call(dataSnapshot.getValue(Integer.class));
-                                }
-                        );
-                });
-
+                                });
     }
 
     public static void addToMessagesCount(String toUser, String currentUser) {
         isChatActive(toUser, currentUser, arg -> {
             Boolean isActive = (Boolean) arg;
             if (!isActive) {
-                getUserDialogRef(toUser, currentUser, arg1 -> {
-                    DatabaseReference userRef = (DatabaseReference) arg1;
+                DatabaseReference userRef =getUserDialogRef(toUser, currentUser);
                     userRef.child("unread").get().addOnSuccessListener(dataSnapshot -> {
                         if (dataSnapshot.exists()) {
                             userRef.child("unread").setValue(dataSnapshot.getValue(Integer.class) + 1);
@@ -129,23 +101,14 @@ public class ChatService {
                         }
 
                     });
-                });
-            }
-            });
-
-
+            }});
     }
 
-
     public static void whoseCounter(String toUser, String currentUser, Callback callback) {
-        getUserDialogRef(toUser, currentUser, arg -> {
-            DatabaseReference userRef = (DatabaseReference) arg;
+        DatabaseReference userRef = getUserDialogRef(toUser, currentUser);
             getNewMessagesCount(toUser, currentUser, arg1 -> userRef.child("unread_property").get().addOnSuccessListener(dataSnapshot -> {
                 callback.call(dataSnapshot.getValue(String.class));
             }));
-        });
-
-
     }
 
     public static void removeCounter(String toUser, String currentUser) {
@@ -161,7 +124,7 @@ public class ChatService {
     }
 
     public static FirebaseRecyclerOptions<MessageD> getUserOptions(User currentUser, User toUser) {
-        Query query = dialogsRef(currentUser, toUser).child("messages");
+        Query query = getUserDialogRef(currentUser.id, toUser.id).child("messages");
         ClassSnapshotParser<MessageD> parser = new ClassSnapshotParser<>(MessageD.class);
 
         return new FirebaseRecyclerOptions.Builder<MessageD>()
@@ -172,28 +135,21 @@ public class ChatService {
     public static void testLinkListeners(String currentUser) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser).child("chats");
         reference.get().addOnSuccessListener(dataSnapshot -> {
-            Log.e("DEB", "SUCCESS");
-            DataSnapshot lastDataSnapshot = null;
+            DataSnapshot lastDataSnapshot;
             Iterable<DataSnapshot> iterable = dataSnapshot.getChildren();
             for (DataSnapshot snapshot : iterable) {
-                Log.e("DEB", "FOR ITERATOR: " + snapshot.getKey());
                 lastDataSnapshot = snapshot;
-                getUserDialogRef(lastDataSnapshot.getKey(), currentUser, arg -> {
-                    Log.e("DEB", "CALL");
-                    DatabaseReference mainRef = (DatabaseReference) arg;
-                    Log.e("DEB", String.valueOf(mainRef));
+                DatabaseReference mainRef =getUserDialogRef(lastDataSnapshot.getKey(), currentUser);
                     mainRef.child("unread").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot1) {
                             Log.e("DEB", "The " + snapshot1.getKey() + " test data is " + snapshot1.getValue());
                             ChatFragment.notifyAdapter();
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                             Log.e("DEB", "ERROR: " + error.getDetails());
-                        }
-                    });
+                    }
                 });
             }
         });
