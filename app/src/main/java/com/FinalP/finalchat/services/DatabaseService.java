@@ -140,23 +140,4 @@ public class DatabaseService {
             }
         });
     }
-    public static void downloadImage(StorageReference reference,Callback callback){
-        try {
-            File localFile = File.createTempFile("image", "jpg");
-            reference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    callback.call(localFile.toURI());
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                }
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
